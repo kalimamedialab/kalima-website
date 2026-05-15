@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kalima Media Lab — ecosistema mediatico multilingue. Arabita, Banglita, Kalam Italiano.">
+<meta property="og:title" content="Kalima Media Lab">
+<meta property="og:description" content="Voci che attraversano confini. Storie nelle lingue che la gente parla davvero.">
+<meta property="og:image" content="/static/loghi/kalima-logo.png">
+<title>Kalima Media Lab</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#080808;
+  color:#e8e4de;
+  font-family:'DM Sans',sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* ── VARIABILI ────────────────────────────────────────────────────────── */
+:root{
+  --gold:#c9a96e;
+  --gold-dim:#8a6d42;
+  --surface:#0f0f0f;
+  --surface2:#141414;
+  --border:#1e1e1e;
+  --border2:#2a2a2a;
+  --text-muted:#666;
+  --text-mid:#999;
+  --text-bright:#e8e4de;
+}
+
+/* ── LANG BAR ─────────────────────────────────────────────────────────── */
+#lang-bar{
+  position:sticky;
+  top:0;
+  z-index:200;
+  background:rgba(8,8,8,0.96);
+  backdrop-filter:blur(8px);
+  border-bottom:0.5px solid var(--border);
+  padding:0 2rem;
+  height:44px;
+  display:flex;
+  align-items:center;
+  gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+#lang-bar::-webkit-scrollbar{display:none}
+.lang-label{
+  font-size:10px;
+  letter-spacing:0.15em;
+  color:#333;
+  margin-right:1rem;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.lang-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;
+  color:#555;
+  letter-spacing:0.05em;
+  padding:6px 10px;
+  border-radius:4px;
+  transition:color .2s,background .2s;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.lang-btn .flag{font-size:16px;line-height:1}
+.lang-btn:hover{color:#ccc;background:#161616}
+.lang-btn.active{color:var(--gold);background:#1a1500}
+
+/* ── HERO ─────────────────────────────────────────────────────────────── */
+#hero{
+  padding:5rem 2rem 4rem;
+  text-align:center;
+  border-bottom:0.5px solid var(--border);
+  position:relative;
+}
+.hero-logo-img{
+  height:80px;
+  width:auto;
+  margin:0 auto 2rem;
+  filter:brightness(1.15);
+}
+.hero-tagline{
+  font-size:1.1rem;
+  color:var(--text-mid);
+  font-weight:300;
+  max-width:500px;
+  margin:0 auto;
+  line-height:1.8;
+}
+.hero-tagline em{
+  font-style:normal;
+  color:var(--gold);
+}
+
+/* ── SEZIONI ──────────────────────────────────────────────────────────── */
+.section{padding:3.5rem 0 0}
+.section-header{
+  padding:0 2rem 1.5rem;
+  display:flex;
+  align-items:baseline;
+  gap:1rem;
+}
+.section-label{
+  font-size:0.65rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+}
+.section-line{
+  flex:1;
+  height:0.5px;
+  background:var(--border);
+}
+
+/* ── PROJECTS GRID ────────────────────────────────────────────────────── */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  border-top:0.5px solid var(--border);
+}
+@media(max-width:860px){
+  .projects-grid{grid-template-columns:1fr}
+}
+
+.project-card{
+  background:var(--surface);
+  border-right:0.5px solid var(--border);
+  border-bottom:0.5px solid var(--border);
+  padding:2.5rem 2rem 2rem;
+  cursor:pointer;
+  transition:background .25s;
+  display:flex;
+  flex-direction:column;
+}
+.project-card:last-child{border-right:none}
+.project-card:hover{background:var(--surface2)}
+
+.proj-logo-wrap{
+  height:90px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-bottom:1.5rem;
+}
+.proj-logo-wrap img{
+  max-height:80px;
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  object-position:left center;
+}
+
+.proj-langs{
+  display:flex;
+  gap:6px;
+  margin-bottom:1.2rem;
+  flex-wrap:wrap;
+}
+.proj-lang-tag{
+  font-size:10px;
+  letter-spacing:0.08em;
+  color:var(--gold-dim);
+  border:0.5px solid #2e2200;
+  padding:2px 8px;
+  border-radius:3px;
+  background:#130f00;
+}
+
+.proj-desc{
+  font-size:0.85rem;
+  color:#777;
+  line-height:1.7;
+  margin-bottom:1.5rem;
+  flex:1;
+}
+
+.proj-headlines{
+  border-top:0.5px solid var(--border);
+  padding-top:1rem;
+  margin-bottom:1.5rem;
+}
+.headline-item{
+  font-size:0.78rem;
+  color:#888;
+  padding:0.35rem 0;
+  border-bottom:0.5px solid #141414;
+  line-height:1.5;
+  display:flex;
+  gap:0.5rem;
+  align-items:flex-start;
+}
+.headline-item:last-child{border-bottom:none}
+.hl-l2{font-size:0.82rem;color:#b0a898;font-weight:400;display:block;margin-bottom:2px}
+.hl-it{font-size:0.75rem;color:#555}
+.headline-dot{color:var(--gold);font-size:0.55rem;margin-top:5px;flex-shrink:0}
+
+.proj-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+}
+.proj-visit-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:0.72rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--gold);
+  border:0.5px solid #2e2200;
+  padding:6px 14px;
+  border-radius:3px;
+  transition:background .2s,color .2s;
+}
+.proj-visit-btn:hover{background:#1a1200}
+.proj-visit-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.proj-social{
+  display:flex;
+  gap:10px;
+}
+.proj-social a{
+  color:#3a3a3a;
+  transition:color .2s;
+  display:flex;
+  align-items:center;
+}
+.proj-social a:hover{color:var(--gold)}
+.proj-social svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── SERVICES GRID ────────────────────────────────────────────────────── */
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-top:0.5px solid var(--border);
+}
+@media(max-width:900px){
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+  .services-grid{grid-template-columns:1fr}
+}
+
+.service-card{
+  background:var(--surface);
+  border-right:0.5px solid var(--border);
+  border-bottom:0.5px solid var(--border);
+  padding:2rem 1.75rem;
+  transition:background .2s;
+}
+.service-card:last-child{border-right:none}
+.service-card:hover{background:var(--surface2)}
+
+.svc-icon{
+  width:36px;
+  height:36px;
+  margin-bottom:1.2rem;
+  color:var(--gold);
+}
+.svc-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+.svc-title{
+  font-size:0.9rem;
+  font-weight:500;
+  color:#d0ccc6;
+  margin-bottom:0.6rem;
+  line-height:1.4;
+}
+.svc-desc{
+  font-size:0.78rem;
+  color:#5a5a5a;
+  line-height:1.7;
+}
+.svc-tag{
+  display:inline-block;
+  margin-top:1rem;
+  font-size:0.6rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+  border:0.5px solid #2a1e00;
+  padding:2px 8px;
+  border-radius:2px;
+}
+
+/* ── CONTACT STRIP ────────────────────────────────────────────────────── */
+#contact{
+  margin-top:4rem;
+  border-top:0.5px solid var(--border);
+  padding:2.5rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1.5rem;
+}
+.contact-text{
+  font-size:0.85rem;
+  color:var(--text-muted);
+}
+.contact-text strong{color:var(--text-mid);font-weight:400}
+.contact-email{
+  font-size:0.85rem;
+  color:var(--gold);
+  border-bottom:0.5px solid var(--gold-dim);
+  padding-bottom:1px;
+  transition:color .2s;
+}
+.contact-email:hover{color:#e8c080}
+
+/* ── FOOTER ───────────────────────────────────────────────────────────── */
+footer{
+  border-top:0.5px solid var(--border);
+  padding:1.5rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+.footer-copy{
+  font-size:0.72rem;
+  color:#2e2e2e;
+  letter-spacing:0.05em;
+}
+.footer-links{
+  display:flex;
+  gap:1.5rem;
+}
+.footer-links a{
+  font-size:0.72rem;
+  color:#2e2e2e;
+  letter-spacing:0.05em;
+  transition:color .2s;
+}
+.footer-links a:hover{color:var(--gold)}
+
+/* ── ANIMAZIONI ENTRATA ───────────────────────────────────────────────── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.fade-up{
+  opacity:0;
+  animation:fadeUp .6s ease forwards;
+}
+.fade-up:nth-child(1){animation-delay:.05s}
+.fade-up:nth-child(2){animation-delay:.15s}
+.fade-up:nth-child(3){animation-delay:.25s}
+.fade-up:nth-child(4){animation-delay:.35s}
+</style>
+</head>
+
+<body>
+
+<!-- ── LANG BAR ──────────────────────────────────────────────────────────── -->
+<nav id="lang-bar" role="navigation" aria-label="Language selector">
+  <span class="lang-label">LANG</span>
+  <!-- buttons generated by JS -->
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<header id="hero">
+  <img src="/static/loghi/kalima-logo.png" alt="Kalima Media Lab" class="hero-logo-img">
+  <p class="hero-tagline" id="hero-tagline">
+    Voci che attraversano confini.<br>
+    Storie nelle <em>lingue che la gente parla davvero</em>.
+  </p>
+</header>
+
+<!-- ── TESTATE ATTIVE ────────────────────────────────────────────────────── -->
+<section class="section" id="projects">
+  <div class="section-header">
+    <span class="section-label" id="label-projects">Testate attive</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- ARABITA -->
+    <article class="project-card fade-up">
+      <div class="proj-logo-wrap">
+        <img src="/static/loghi/logo_arabita.png" alt="Arabita">
+      </div>
+      <div class="proj-langs">
+        <span class="proj-lang-tag">🇮🇹 Italiano</span>
+        <span class="proj-lang-tag">🇸🇦 عربي</span>
+      </div>
+      <p class="proj-desc" id="arabita-desc">
+        Testata bilingue italiano-arabo su politica mediterranea, migrazione e cultura. Due lingue, una sola verità.
+      </p>
+      <div class="proj-headlines" id="arabita-news">
+        {% if arabita_titoli %}
+          {% for t in arabita_titoli %}
+          <div class="headline-item">
+            <span class="headline-dot">◆</span>
+            <span>
+              {% if t.l2 %}<span class="hl-l2" dir="rtl" lang="ar">{{ t.l2 }}</span><br>{% endif %}
+              <span class="hl-it">{{ t.it }}</span>
+            </span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="headline-item"><span class="headline-dot">◆</span>Moschee in Italia: il caso Mestre</div>
+          <div class="headline-item"><span class="headline-dot">◆</span>Nuovi flussi migratori 2026</div>
+          <div class="headline-item"><span class="headline-dot">◆</span>Gaza: la ricostruzione che non arriva</div>
+        {% endif %}
+      </div>
+      <div class="proj-footer">
+        <a href="https://arabita.news" target="_blank" rel="noopener" class="proj-visit-btn" id="arabita-btn">
+          Visita
+          <svg viewBox="0 0 12 12" aria-hidden="true"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="5,2 10,2 10,7"/></svg>
+        </a>
+        <div class="proj-social">
+          <a href="https://instagram.com/arabitanews" target="_blank" rel="noopener" aria-label="Arabita Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://facebook.com/arabitanews" target="_blank" rel="noopener" aria-label="Arabita Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="https://t.me/arabitanews" target="_blank" rel="noopener" aria-label="Arabita Telegram">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- BANGLITA -->
+    <article class="project-card fade-up">
+      <div class="proj-logo-wrap">
+        <img src="/static/loghi/logo_banglita.png" alt="Banglita">
+      </div>
+      <div class="proj-langs">
+        <span class="proj-lang-tag">🇮🇹 Italiano</span>
+        <span class="proj-lang-tag">🇧🇩 বাংলা</span>
+      </div>
+      <p class="proj-desc" id="banglita-desc">
+        Testata bilingue italiano-bengalese per la diaspora bangladese in Italia e in Europa. Notizie, diritti, comunità.
+      </p>
+      <div class="proj-headlines" id="banglita-news">
+        {% if banglita_titoli %}
+          {% for t in banglita_titoli %}
+          <div class="headline-item">
+            <span class="headline-dot">◆</span>
+            <span>
+              {% if t.l2 %}<span class="hl-l2" dir="ltr" lang="bn">{{ t.l2 }}</span><br>{% endif %}
+              <span class="hl-it">{{ t.it }}</span>
+            </span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="headline-item"><span class="headline-dot">◆</span>Cittadinanza italiana: le nuove regole 2026</div>
+          <div class="headline-item"><span class="headline-dot">◆</span>Dhaka-Roma: ponti economici e culturali</div>
+          <div class="headline-item"><span class="headline-dot">◆</span>Le comunità bengalesi nel nord Italia</div>
+        {% endif %}
+      </div>
+      <div class="proj-footer">
+        <a href="https://banglita.news" target="_blank" rel="noopener" class="proj-visit-btn" id="banglita-btn">
+          Visita
+          <svg viewBox="0 0 12 12" aria-hidden="true"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="5,2 10,2 10,7"/></svg>
+        </a>
+        <div class="proj-social">
+          <a href="https://instagram.com/banglitanews" target="_blank" rel="noopener" aria-label="Banglita Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://facebook.com/banglitanews" target="_blank" rel="noopener" aria-label="Banglita Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="https://t.me/banglitanews" target="_blank" rel="noopener" aria-label="Banglita Telegram">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- KALAM ITALIANO -->
+    <article class="project-card fade-up">
+      <div class="proj-logo-wrap">
+        <img src="/static/loghi/kalima-italiano-logo.png" alt="Kalam Italiano">
+      </div>
+      <div class="proj-langs">
+        <span class="proj-lang-tag">🇮🇹 Italiano L2</span>
+        <span class="proj-lang-tag">DITALS II</span>
+      </div>
+      <p class="proj-desc" id="school-desc">
+        Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificata DITALS II.
+      </p>
+      <div class="proj-headlines" id="school-items">
+        <div class="headline-item"><span class="headline-dot">◆</span>Corso A1 — Italiano per la vita quotidiana</div>
+        <div class="headline-item"><span class="headline-dot">◆</span>Preparazione test di cittadinanza</div>
+        <div class="headline-item"><span class="headline-dot">◆</span>Lezioni one-to-one con insegnante certificata</div>
+      </div>
+      <div class="proj-footer">
+        <a href="https://school.kalimamedialab.com" target="_blank" rel="noopener" class="proj-visit-btn" id="school-btn">
+          Visita
+          <svg viewBox="0 0 12 12" aria-hidden="true"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="5,2 10,2 10,7"/></svg>
+        </a>
+        <div class="proj-social">
+          <a href="https://instagram.com/kalimitaliano" target="_blank" rel="noopener" aria-label="Kalam Italiano Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://wa.me/contact" target="_blank" rel="noopener" aria-label="Kalam WhatsApp">
+            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ── SERVIZI ────────────────────────────────────────────────────────────── -->
+<section class="section" id="services">
+  <div class="section-header">
+    <span class="section-label" id="label-services">Cosa facciamo</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="services-grid">
+
+    <div class="service-card fade-up">
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="svc-title" id="svc1-title">Costruiamo il tuo media bilingue</div>
+      <p class="svc-desc" id="svc1-desc">Progettiamo e lanciamo testate bilingui chiavi in mano — pipeline editoriale, traduzione AI-assistita, pubblicazione automatica. Per ONG, associazioni diasporiche, enti culturali.</p>
+      <span class="svc-tag">Chiavi in mano</span>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <div class="svc-title" id="svc2-title">Lezioni di italiano one-to-one</div>
+      <p class="svc-desc" id="svc2-desc">Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificata.</p>
+      <span class="svc-tag">Online</span>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="svc-title" id="svc3-title">Consulenza editoriale multilingue</div>
+      <p class="svc-desc" id="svc3-desc">Strategia dei contenuti, SEO multilingue e gestione social per organizzazioni che comunicano su più lingue. Scriviamo, traduciamo, pubblichiamo.</p>
+      <span class="svc-tag">Consulting</span>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div class="svc-title" id="svc4-title">Materiali didattici bilingui</div>
+      <p class="svc-desc" id="svc4-desc">Materiali su misura — PDF, esercizi audio, moduli H5P — per scuole di italiano, centri culturali, ONG. Produzione professionale, consegna rapida.</p>
+      <span class="svc-tag">Su commissione</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONTATTO ───────────────────────────────────────────────────────────── -->
+<div id="contact">
+  <p class="contact-text" id="contact-text">
+    <strong id="contact-label">Vuoi collaborare?</strong><br>
+    Scrivici e risponderemo entro 48 ore.
+  </p>
+  <a href="mailto:kalima.medialab@gmail.com" class="contact-email">kalima.medialab@gmail.com</a>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <span class="footer-copy">© 2026 Kalima Media Lab</span>
+  <div class="footer-links">
+    <a href="/privacy">Privacy</a>
+    <a href="mailto:kalima.medialab@gmail.com">Contact</a>
+  </div>
+</footer>
+
+
+<script>
+// ── DATI LINGUE ──────────────────────────────────────────────────────────
+const LANGS = [
+  {code:'it', flag:'🇮🇹', label:'IT', dir:'ltr'},
+  {code:'en', flag:'🇬🇧', label:'EN', dir:'ltr'},
+  {code:'fr', flag:'🇫🇷', label:'FR', dir:'ltr'},
+  {code:'es', flag:'🇪🇸', label:'ES', dir:'ltr'},
+  {code:'ar', flag:'🇸🇦', label:'AR', dir:'rtl'},
+  {code:'zh', flag:'🇨🇳', label:'ZH', dir:'ltr'},
+  {code:'bn', flag:'🇧🇩', label:'বাং', dir:'ltr'},
+  {code:'ur', flag:'🇵🇰', label:'UR', dir:'rtl'},
+  {code:'hi', flag:'🇮🇳', label:'HI', dir:'ltr'},
+  {code:'tr', flag:'🇹🇷', label:'TR', dir:'ltr'},
+  {code:'ro', flag:'🇷🇴', label:'RO', dir:'ltr'},
+  {code:'tl', flag:'🇵🇭', label:'TL', dir:'ltr'},
+  {code:'wo', flag:'🇸🇳', label:'WO', dir:'ltr'},
+];
+
+// ── TRADUZIONI ───────────────────────────────────────────────────────────
+const T = {
+  it:{
+    tagline:'Voci che attraversano confini.<br>Storie nelle <em>lingue che la gente parla davvero</em>.',
+    'label-projects':'Testate attive','label-services':'Cosa facciamo',
+    'arabita-desc':'Testata bilingue italiano-arabo su politica mediterranea, migrazione e cultura. Due lingue, una sola verità.',
+    'banglita-desc':'Testata bilingue italiano-bengalese per la diaspora bangladese in Italia e in Europa. Notizie, diritti, comunità.',
+    'school-desc':'Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificata DITALS II.',
+    'arabita-btn':'Visita','banglita-btn':'Visita','school-btn':'Visita',
+    'svc1-title':'Costruiamo il tuo media bilingue',
+    'svc1-desc':'Progettiamo e lanciamo testate bilingui chiavi in mano — pipeline editoriale, traduzione AI-assistita, pubblicazione automatica. Per ONG, associazioni diasporiche, enti culturali.',
+    'svc2-title':'Lezioni di italiano one-to-one',
+    'svc2-desc':'Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificata.',
+    'svc3-title':'Consulenza editoriale multilingue',
+    'svc3-desc':'Strategia dei contenuti, SEO multilingue e gestione social per organizzazioni che comunicano su più lingue. Scriviamo, traduciamo, pubblichiamo.',
+    'svc4-title':'Materiali didattici bilingui',
+    'svc4-desc':'Materiali su misura — PDF, esercizi audio, moduli H5P — per scuole di italiano, centri culturali, ONG. Produzione professionale, consegna rapida.',
+    'contact-label':'Vuoi collaborare?','contact-text-sub':'Scrivici e risponderemo entro 48 ore.',
+  },
+  en:{
+    tagline:'Voices that cross borders.<br>Stories in the <em>languages people actually speak</em>.',
+    'label-projects':'Active publications','label-services':'What we do',
+    'arabita-desc':'Bilingual Italian-Arabic news platform covering Mediterranean politics, migration, and culture. Two languages, one truth.',
+    'banglita-desc':'Bilingual Italian-Bengali platform for the Bangladeshi diaspora in Italy and Europe. News, rights, community.',
+    'school-desc':'Online Italian courses for immigrants, second generations, and citizenship applicants. DITALS II certified teacher.',
+    'arabita-btn':'Visit','banglita-btn':'Visit','school-btn':'Visit',
+    'svc1-title':'We build your bilingual media',
+    'svc1-desc':'We design and launch turnkey bilingual news platforms — editorial pipeline, AI-assisted translation, automated publishing. For NGOs, diaspora associations, cultural institutions.',
+    'svc2-title':'Italian one-to-one lessons',
+    'svc2-desc':'Online Italian lessons for immigrants, second generations, and citizenship applicants. Flexible schedule, affordable rates, DITALS II certified.',
+    'svc3-title':'Multilingual editorial consulting',
+    'svc3-desc':'Content strategy, multilingual SEO, and social media management for organizations communicating across languages. We write, translate, publish.',
+    'svc4-title':'Bilingual didactic materials',
+    'svc4-desc':'Custom materials — PDFs, audio exercises, H5P modules — for Italian language schools, cultural centers, NGOs.',
+    'contact-label':'Want to work with us?','contact-text-sub':'Write to us and we\'ll reply within 48 hours.',
+  },
+  fr:{
+    tagline:'Des voix qui traversent les frontières.<br>Des histoires dans les <em>langues que les gens parlent vraiment</em>.',
+    'label-projects':'Publications actives','label-services':'Ce que nous faisons',
+    'arabita-desc':'Plateforme bilingue italo-arabe couvrant la politique méditerranéenne, la migration et la culture.',
+    'banglita-desc':'Plateforme bilingue italo-bengalie pour la diaspora bangladaise en Italie et en Europe.',
+    'school-desc':'Cours d\'italien en ligne pour immigrés, deuxièmes générations et préparation à la citoyenneté. Enseignante certifiée DITALS II.',
+    'arabita-btn':'Visiter','banglita-btn':'Visiter','school-btn':'Visiter',
+    'svc1-title':'Nous construisons votre média bilingue',
+    'svc1-desc':'Nous concevons et lançons des plateformes d\'information bilingues clés en main — pipeline éditorial, traduction assistée par IA, publication automatisée.',
+    'svc2-title':'Cours d\'italien individuels',
+    'svc2-desc':'Cours d\'italien en ligne pour immigrés et candidats à la citoyenneté. Horaires flexibles, tarifs accessibles.',
+    'svc3-title':'Conseil éditorial multilingue',
+    'svc3-desc':'Stratégie de contenu, SEO multilingue et gestion des réseaux sociaux pour les organisations multilingues.',
+    'svc4-title':'Matériaux pédagogiques bilingues',
+    'svc4-desc':'Matériaux sur mesure — PDF, exercices audio, modules H5P — pour les écoles de langue et centres culturels.',
+    'contact-label':'Vous souhaitez collaborer ?','contact-text-sub':'Écrivez-nous, nous répondrons sous 48 heures.',
+  },
+  es:{
+    tagline:'Voces que cruzan fronteras.<br>Historias en los <em>idiomas que la gente realmente habla</em>.',
+    'label-projects':'Publicaciones activas','label-services':'Lo que hacemos',
+    'arabita-desc':'Plataforma bilingüe italiano-árabe sobre política mediterránea, migración y cultura.',
+    'banglita-desc':'Plataforma bilingüe italiano-bengalí para la diáspora bangladesí en Italia y Europa.',
+    'school-desc':'Cursos de italiano en línea para inmigrantes, segundas generaciones y preparación para la ciudadanía.',
+    'arabita-btn':'Visitar','banglita-btn':'Visitar','school-btn':'Visitar',
+    'svc1-title':'Construimos tu medio bilingüe',
+    'svc1-desc':'Diseñamos y lanzamos plataformas de noticias bilingües llave en mano — pipeline editorial, traducción asistida por IA, publicación automatizada.',
+    'svc2-title':'Clases individuales de italiano',
+    'svc2-desc':'Clases de italiano en línea para inmigrantes y solicitantes de ciudadanía. Horarios flexibles, precios accesibles.',
+    'svc3-title':'Consultoría editorial multilingüe',
+    'svc3-desc':'Estrategia de contenidos, SEO multilingüe y gestión de redes sociales para organizaciones multilingües.',
+    'svc4-title':'Materiales didácticos bilingües',
+    'svc4-desc':'Materiales personalizados — PDF, ejercicios de audio, módulos H5P — para escuelas de idiomas y centros culturales.',
+    'contact-label':'¿Quieres colaborar?','contact-text-sub':'Escríbenos y responderemos en 48 horas.',
+  },
+  ar:{
+    tagline:'أصوات تعبر الحدود.<br>قصص بـ<em>اللغات التي يتحدث بها الناس فعلاً</em>.',
+    'label-projects':'المنابر الإعلامية','label-services':'خدماتنا',
+    'arabita-desc':'منصة إخبارية ثنائية اللغة (إيطالي-عربي) تغطي السياسة المتوسطية والهجرة والثقافة.',
+    'banglita-desc':'منصة إخبارية ثنائية اللغة (إيطالي-بنغالي) للجاليات البنغلاديشية في إيطاليا وأوروبا.',
+    'school-desc':'دورات اللغة الإيطالية عبر الإنترنت للمهاجرين والأجيال الثانية والتحضير للجنسية.',
+    'arabita-btn':'زيارة','banglita-btn':'زيارة','school-btn':'زيارة',
+    'svc1-title':'نبني منبرك الإعلامي ثنائي اللغة',
+    'svc1-desc':'نصمم وننطلق بمنصات إخبارية ثنائية اللغة — خط تحريري، ترجمة بمساعدة الذكاء الاصطناعي، نشر تلقائي.',
+    'svc2-title':'دروس الإيطالية الفردية',
+    'svc2-desc':'دروس إيطالية عبر الإنترنت للمهاجرين والمتقدمين للجنسية. جداول مرنة وأسعار في متناول الجميع.',
+    'svc3-title':'استشارات تحريرية متعددة اللغات',
+    'svc3-desc':'استراتيجية المحتوى، تحسين محركات البحث، وإدارة وسائل التواصل الاجتماعي للمؤسسات متعددة اللغات.',
+    'svc4-title':'مواد تعليمية ثنائية اللغة',
+    'svc4-desc':'مواد مخصصة — PDFs، تمارين صوتية، وحدات H5P — لمدارس اللغة والمراكز الثقافية.',
+    'contact-label':'تريد التعاون معنا؟','contact-text-sub':'اكتب لنا وسنرد خلال 48 ساعة.',
+  },
+  zh:{
+    tagline:'跨越边界的声音。<br>用<em>人们真正说的语言</em>讲述的故事。',
+    'label-projects':'活跃出版物','label-services':'我们的服务',
+    'arabita-desc':'意大利语-阿拉伯语双语新闻平台，报道地中海政治、移民和文化。',
+    'banglita-desc':'意大利语-孟加拉语双语平台，服务意大利和欧洲的孟加拉裔社区。',
+    'school-desc':'面向移民、第二代和入籍申请者的在线意大利语课程。DITALS II认证教师。',
+    'arabita-btn':'访问','banglita-btn':'访问','school-btn':'访问',
+    'svc1-title':'构建您的双语媒体',
+    'svc1-desc':'我们设计并推出双语新闻平台——编辑流程、AI辅助翻译、自动化发布。服务于NGO、侨民协会和文化机构。',
+    'svc2-title':'意大利语一对一课程',
+    'svc2-desc':'面向移民和入籍申请者的在线意大利语课程。时间灵活，价格实惠。',
+    'svc3-title':'多语言编辑咨询',
+    'svc3-desc':'为跨语言传播的组织提供内容策略、SEO和社交媒体管理。',
+    'svc4-title':'双语教学材料',
+    'svc4-desc':'定制学习材料——PDF、音频练习、H5P模块——适用于意大利语学校和文化中心。',
+    'contact-label':'想要合作？','contact-text-sub':'联系我们，48小时内回复。',
+  },
+  bn:{
+    tagline:'সীমানা পেরিয়ে যাওয়া কণ্ঠস্বর।<br><em>মানুষ যে ভাষায় কথা বলে</em> সেই ভাষায় গল্প।',
+    'label-projects':'সক্রিয় প্রকাশনা','label-services':'আমরা কী করি',
+    'arabita-desc':'ইতালীয়-আরবি দ্বিভাষিক সংবাদ প্ল্যাটফর্ম। ভূমধ্যসাগরীয় রাজনীতি, অভিবাসন এবং সংস্কৃতি।',
+    'banglita-desc':'ইতালি ও ইউরোপে বাংলাদেশি প্রবাসীদের জন্য ইতালীয়-বাংলা সংবাদ প্ল্যাটফর্ম।',
+    'school-desc':'অভিবাসী ও নাগরিকত্বের জন্য অনলাইন ইতালীয় ভাষার কোর্স। DITALS II সার্টিফাইড শিক্ষক।',
+    'arabita-btn':'ভিজিট','banglita-btn':'ভিজিট','school-btn':'ভিজিট',
+    'svc1-title':'আপনার দ্বিভাষিক মিডিয়া তৈরি করি',
+    'svc1-desc':'আমরা দ্বিভাষিক সংবাদ প্ল্যাটফর্ম ডিজাইন ও লঞ্চ করি — সম্পাদকীয় পাইপলাইন, AI-সহায়তা অনুবাদ, স্বয়ংক্রিয় প্রকাশনা।',
+    'svc2-title':'ইতালীয় ওয়ান-টু-ওয়ান পাঠ',
+    'svc2-desc':'অভিবাসী ও নাগরিকত্ব আবেদনকারীদের জন্য অনলাইন ইতালীয় পাঠ। নমনীয় সময়সূচি।',
+    'svc3-title':'বহুভাষিক সম্পাদকীয় পরামর্শ',
+    'svc3-desc':'বহুভাষিক প্রতিষ্ঠানের জন্য কন্টেন্ট কৌশল, SEO এবং সোশ্যাল মিডিয়া ব্যবস্থাপনা।',
+    'svc4-title':'দ্বিভাষিক শিক্ষামূলক উপকরণ',
+    'svc4-desc':'কাস্টম শিক্ষা উপকরণ — PDF, অডিও অনুশীলন, H5P মডিউল — ভাষা স্কুল ও সাংস্কৃতিক কেন্দ্রের জন্য।',
+    'contact-label':'সহযোগিতা করতে চান?','contact-text-sub':'আমাদের লিখুন, ৪৮ ঘণ্টার মধ্যে উত্তর দেব।',
+  },
+  ur:{
+    tagline:'سرحدیں پار کرتی آوازیں۔<br><em>ان زبانوں میں کہانیاں</em> جو لوگ واقعی بولتے ہیں۔',
+    'label-projects':'فعال اشاعتیں','label-services':'ہم کیا کرتے ہیں',
+    'arabita-desc':'اطالوی-عربی دو لسانی خبری پلیٹ فارم جو بحیرہ روم کی سیاست، ہجرت اور ثقافت کا احاطہ کرتا ہے۔',
+    'banglita-desc':'اطالیہ اور یورپ میں بنگلہ دیشی تارکین وطن کے لیے اطالوی-بنگالی خبری پلیٹ فارم۔',
+    'school-desc':'تارکین وطن اور شہریت کی تیاری کے لیے آن لائن اطالوی زبان کے کورسز۔',
+    'arabita-btn':'وزٹ','banglita-btn':'وزٹ','school-btn':'وزٹ',
+    'svc1-title':'اپنا دو لسانی میڈیا بنائیں',
+    'svc1-desc':'ہم دو لسانی نیوز پلیٹ فارم ڈیزائن اور لانچ کرتے ہیں — ادارتی پائپ لائن، AI سے مدد یافتہ ترجمہ۔',
+    'svc2-title':'اطالوی ون ٹو ون اسباق',
+    'svc2-desc':'تارکین وطن اور شہریت درخواست گزاروں کے لیے آن لائن اطالوی اسباق۔ لچکدار اوقات۔',
+    'svc3-title':'کثیر اللسانی ادارتی مشاورت',
+    'svc3-desc':'کثیر اللسانی تنظیموں کے لیے مواد کی حکمت عملی، SEO اور سوشل میڈیا انتظام۔',
+    'svc4-title':'دو لسانی تدریسی مواد',
+    'svc4-desc':'حسب ضرورت تعلیمی مواد — PDFs، آڈیو مشقیں، H5P ماڈیول۔',
+    'contact-label':'تعاون کرنا چاہتے ہیں؟','contact-text-sub':'ہمیں لکھیں، 48 گھنٹے میں جواب دیں گے۔',
+  },
+  hi:{
+    tagline:'सीमाएं पार करती आवाजें।<br><em>उन भाषाओं में कहानियां</em> जो लोग वास्तव में बोलते हैं।',
+    'label-projects':'सक्रिय प्रकाशन','label-services':'हम क्या करते हैं',
+    'arabita-desc':'इतालवी-अरबी द्विभाषी समाचार मंच जो भूमध्यसागरीय राजनीति, प्रवासन और संस्कृति को कवर करता है।',
+    'banglita-desc':'इटली और यूरोप में बांग्लादेशी प्रवासियों के लिए इतालवी-बांग्ला समाचार मंच।',
+    'school-desc':'प्रवासियों और नागरिकता की तैयारी के लिए ऑनलाइन इतालवी भाषा पाठ्यक्रम।',
+    'arabita-btn':'विजिट','banglita-btn':'विजिट','school-btn':'विजिट',
+    'svc1-title':'आपका द्विभाषी मीडिया बनाते हैं',
+    'svc1-desc':'हम द्विभाषी समाचार प्लेटफ़ॉर्म डिज़ाइन और लॉन्च करते हैं — संपादकीय पाइपलाइन, AI-सहायता अनुवाद।',
+    'svc2-title':'इतालवी वन-टू-वन पाठ',
+    'svc2-desc':'प्रवासियों और नागरिकता आवेदकों के लिए ऑनलाइन इतालवी पाठ। लचीला शेड्यूल।',
+    'svc3-title':'बहुभाषी संपादकीय परामर्श',
+    'svc3-desc':'बहुभाषी संगठनों के लिए सामग्री रणनीति, SEO और सोशल मीडिया प्रबंधन।',
+    'svc4-title':'द्विभाषी शिक्षण सामग्री',
+    'svc4-desc':'कस्टम शिक्षण सामग्री — PDF, ऑडियो अभ्यास, H5P मॉड्यूल।',
+    'contact-label':'सहयोग करना चाहते हैं?','contact-text-sub':'हमें लिखें, 48 घंटे में जवाब देंगे।',
+  },
+  tr:{
+    tagline:'Sınırları aşan sesler.<br><em>İnsanların gerçekten konuştuğu dillerde</em> hikayeler.',
+    'label-projects':'Aktif yayınlar','label-services':'Ne yapıyoruz',
+    'arabita-desc':'Akdeniz siyaseti, göç ve kültürü ele alan İtalyanca-Arapça iki dilli haber platformu.',
+    'banglita-desc':'İtalya ve Avrupa\'daki Bangladeşli diaspora için İtalyanca-Bengalce haber platformu.',
+    'school-desc':'Göçmenler ve vatandaşlık hazırlığı için çevrimiçi İtalyanca kursları. DITALS II sertifikalı öğretmen.',
+    'arabita-btn':'Ziyaret','banglita-btn':'Ziyaret','school-btn':'Ziyaret',
+    'svc1-title':'İki dilli medyanızı kuruyoruz',
+    'svc1-desc':'Anahtar teslim iki dilli haber platformları tasarlıyor ve başlatıyoruz — AI destekli çeviri, otomatik yayıncılık.',
+    'svc2-title':'İtalyanca birebir dersler',
+    'svc2-desc':'Göçmenler ve vatandaşlık başvuranlar için çevrimiçi İtalyanca dersleri. Esnek saatler, uygun fiyatlar.',
+    'svc3-title':'Çok dilli editoryal danışmanlık',
+    'svc3-desc':'Çok dilli kuruluşlar için içerik stratejisi, SEO ve sosyal medya yönetimi.',
+    'svc4-title':'İki dilli öğretim materyalleri',
+    'svc4-desc':'Özel öğrenme materyalleri — PDF, ses egzersizleri, H5P modülleri — dil okulları ve kültür merkezleri için.',
+    'contact-label':'İşbirliği yapmak ister misiniz?','contact-text-sub':'Bize yazın, 48 saat içinde yanıt verelim.',
+  },
+  ro:{
+    tagline:'Voci care traversează granițele.<br>Povești în <em>limbile pe care oamenii le vorbesc cu adevărat</em>.',
+    'label-projects':'Publicații active','label-services':'Ce facem',
+    'arabita-desc':'Platformă bilingvă italiană-arabă care acoperă politica mediteraneană, migrația și cultura.',
+    'banglita-desc':'Platformă bilingvă italiană-bengaleză pentru diaspora bangladeșă din Italia și Europa.',
+    'school-desc':'Cursuri online de italiană pentru imigranți și pregătire cetățenie. Profesoară certificată DITALS II.',
+    'arabita-btn':'Vizitați','banglita-btn':'Vizitați','school-btn':'Vizitați',
+    'svc1-title':'Construim media bilingvă pentru voi',
+    'svc1-desc':'Proiectăm și lansăm platforme de știri bilingve la cheie — pipeline editorial, traducere asistată de AI.',
+    'svc2-title':'Lecții de italiană unu la unu',
+    'svc2-desc':'Lecții online de italiană pentru imigranți și solicitanți de cetățenie. Program flexibil, prețuri accesibile.',
+    'svc3-title':'Consultanță editorială multilingvă',
+    'svc3-desc':'Strategie de conținut, SEO și gestionare social media pentru organizații multilingve.',
+    'svc4-title':'Materiale didactice bilingve',
+    'svc4-desc':'Materiale personalizate — PDF, exerciții audio, module H5P — pentru școli de limbă și centre culturale.',
+    'contact-label':'Doriți să colaborați?','contact-text-sub':'Scrieți-ne și vom răspunde în 48 de ore.',
+  },
+  tl:{
+    tagline:'Mga boses na tumatawid sa mga hangganan.<br>Mga kwento sa <em>mga wikang talagang sinasalita ng mga tao</em>.',
+    'label-projects':'Aktibong publikasyon','label-services':'Ano ang ginagawa namin',
+    'arabita-desc':'Dalawang-wikaang Italian-Arabic na platform ng balita tungkol sa pulitika ng Mediteraneo, migrasyon, at kultura.',
+    'banglita-desc':'Dalawang-wikaang Italian-Bengali na platform para sa diaspora ng Bangladesh sa Italya at Europa.',
+    'school-desc':'Mga online na kurso sa Italyano para sa mga imigrante at paghahanda sa pagkamamamayan.',
+    'arabita-btn':'Bisitahin','banglita-btn':'Bisitahin','school-btn':'Bisitahin',
+    'svc1-title':'Itatayo namin ang inyong bilingwal na media',
+    'svc1-desc':'Nagdidisenyo at naglulunsad kami ng mga bilingwal na platform ng balita — editorial pipeline, pagsasalin gamit ang AI.',
+    'svc2-title':'Mga indibidwal na aralin sa Italyano',
+    'svc2-desc':'Mga online na aralin sa Italyano para sa mga imigrante at aplikante ng pagkamamamayan.',
+    'svc3-title':'Multilingwal na editorial consulting',
+    'svc3-desc':'Estratehiya ng nilalaman, SEO, at pamamahala ng social media para sa mga multilingwal na organisasyon.',
+    'svc4-title':'Bilingwal na didactic na materyales',
+    'svc4-desc':'Mga customized na materyales sa pag-aaral — PDF, mga ehersisyo sa audio, mga H5P module.',
+    'contact-label':'Gusto bang makipagtulungan?','contact-text-sub':'Sumulat sa amin at sasagutin namin sa loob ng 48 oras.',
+  },
+  wo:{
+    tagline:'Dëkk yi yépp ñu ngi xam-xam seen làkk.<br>Laaj yi ci <em>làkk bu ñu wax rekk</em>.',
+    'label-projects':'Jaaxle yi dafa dox','label-services':'Luy ñu def',
+    'arabita-desc':'Jaaxle bu ñaar làkk (Italiyeen-Araab) bu xëy askan yi ci poritik Mediterane, emigrasyon ak kultur.',
+    'banglita-desc':'Jaaxle bu ñaar làkk (Italiyeen-Bengali) ngir askan Bangladès yi ci Itali ak Erop.',
+    'school-desc':'Cours Italiyeen en ligne ngir emigre yi ak jàng citoyenneté. Jàngalekat bu certifié DITALS II.',
+    'arabita-btn':'Dem','banglita-btn':'Dem','school-btn':'Dem',
+    'svc1-title':'Dëkk sa média bu ñaar làkk',
+    'svc1-desc':'Ñu design ak ñu launch plateau bu ñaar làkk — pipeline éditorial, traduction AI.',
+    'svc2-title':'Cours Italiyeen bu yëngël',
+    'svc2-desc':'Cours Italiyeen en ligne ngir emigre yi ak ñi ñëwël citoyenneté.',
+    'svc3-title':'Conseil éditorial bu bare làkk',
+    'svc3-desc':'Stratégie contenu, SEO ak gestion réseaux sociaux pour organisations multilingues.',
+    'svc4-title':'Matériaux pédagogiques bu ñaar làkk',
+    'svc4-desc':'Matériaux formation — PDF, exercices audio, modules H5P.',
+    'contact-label':'Bëgg nga liggéey ak nun?','contact-text-sub':'Bind nañu, dinañu tontu ci 48 waxtu.',
+  },
+};
+
+// ── LANG BAR INIT ────────────────────────────────────────────────────────
+let currentLang = 'it';
+const bar = document.getElementById('lang-bar');
+const labelEl = document.createElement('span');
+labelEl.className='lang-label';
+labelEl.textContent='LANG';
+bar.appendChild(labelEl);
+
+LANGS.forEach(l => {
+  const btn = document.createElement('button');
+  btn.className = 'lang-btn' + (l.code === currentLang ? ' active' : '');
+  btn.dataset.code = l.code;
+  btn.innerHTML = `<span class="flag">${l.flag}</span>${l.label}`;
+  btn.addEventListener('click', () => switchLang(l.code, l.dir));
+  bar.appendChild(btn);
+});
+
+// ── SWITCH LINGUA ────────────────────────────────────────────────────────
+function switchLang(code, dir) {
+  currentLang = code;
+  const t = T[code];
+  if (!t) return;
+
+  document.documentElement.lang = code;
+  document.documentElement.dir = dir;
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.code === code)
+  );
+
+  // tagline hero
+  document.getElementById('hero-tagline').innerHTML = t.tagline;
+
+  // label sezioni
+  const ids = [
+    'label-projects','label-services',
+    'arabita-desc','banglita-desc','school-desc',
+    'arabita-btn','banglita-btn','school-btn',
+    'svc1-title','svc1-desc','svc2-title','svc2-desc',
+    'svc3-title','svc3-desc','svc4-title','svc4-desc',
+  ];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && t[id] !== undefined) el.innerHTML = t[id];
+  });
+
+  // contact
+  const cl = document.getElementById('contact-label');
+  const ct = document.getElementById('contact-text');
+  if (cl) cl.innerHTML = t['contact-label'];
+  if (ct) ct.innerHTML = `<strong id="contact-label">${t['contact-label']}</strong><br>${t['contact-text-sub']}`;
+}
+</script>
+</body>
+</html>
