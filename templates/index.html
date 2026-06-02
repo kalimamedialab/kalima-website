@@ -208,14 +208,12 @@ img{display:block;max-width:100%}
   padding:0.35rem 0;
   border-bottom:0.5px solid #141414;
   line-height:1.5;
-  display:flex;
-  gap:0.5rem;
-  align-items:flex-start;
 }
 .headline-item:last-child{border-bottom:none}
-.hl-l2{font-size:0.92rem;color:#b0a898;font-weight:400;display:block;margin-bottom:2px;text-align:right}
-.hl-it{font-size:0.85rem;color:#555;display:block;text-align:left}
-.headline-dot{color:var(--gold);font-size:0.55rem;margin-top:5px;flex-shrink:0}
+.hl-l2{font-size:0.92rem;color:#b0a898;font-weight:400;display:block;margin-bottom:3px}
+.hl-l2[dir="rtl"]{text-align:right}
+.hl-l2[dir="ltr"]{text-align:left}
+.hl-it{font-size:0.82rem;color:#555;display:block;text-align:left}
 
 .proj-footer{
   display:flex;
@@ -417,7 +415,7 @@ footer{
         {% if arabita_titoli %}
           {% for t in arabita_titoli %}
           <div class="headline-item">
-            <span class="headline-dot">◆</span>
+            
             <span>
               {% if t.l2 %}<span class="hl-l2" dir="rtl" lang="ar">{{ t.l2 }}</span><br>{% endif %}
               <span class="hl-it">{{ t.it }}</span>
@@ -425,9 +423,9 @@ footer{
           </div>
           {% endfor %}
         {% else %}
-          <div class="headline-item"><span class="headline-dot">◆</span>Moschee in Italia: il caso Mestre</div>
-          <div class="headline-item"><span class="headline-dot">◆</span>Nuovi flussi migratori 2026</div>
-          <div class="headline-item"><span class="headline-dot">◆</span>Gaza: la ricostruzione che non arriva</div>
+          <div class="headline-item">Moschee in Italia: il caso Mestre</div>
+          <div class="headline-item">Nuovi flussi migratori 2026</div>
+          <div class="headline-item">Gaza: la ricostruzione che non arriva</div>
         {% endif %}
       </div>
       <div class="proj-footer">
@@ -465,7 +463,7 @@ footer{
         {% if banglita_titoli %}
           {% for t in banglita_titoli %}
           <div class="headline-item">
-            <span class="headline-dot">◆</span>
+            
             <span>
               {% if t.l2 %}<span class="hl-l2" dir="ltr" lang="bn">{{ t.l2 }}</span><br>{% endif %}
               <span class="hl-it">{{ t.it }}</span>
@@ -473,9 +471,9 @@ footer{
           </div>
           {% endfor %}
         {% else %}
-          <div class="headline-item"><span class="headline-dot">◆</span>Cittadinanza italiana: le nuove regole 2026</div>
-          <div class="headline-item"><span class="headline-dot">◆</span>Dhaka-Roma: ponti economici e culturali</div>
-          <div class="headline-item"><span class="headline-dot">◆</span>Le comunità bengalesi nel nord Italia</div>
+          <div class="headline-item">Cittadinanza italiana: le nuove regole 2026</div>
+          <div class="headline-item">Dhaka-Roma: ponti economici e culturali</div>
+          <div class="headline-item">Le comunità bengalesi nel nord Italia</div>
         {% endif %}
       </div>
       <div class="proj-footer">
@@ -507,12 +505,12 @@ footer{
         <span class="proj-lang-tag">DITALS II</span>
       </div>
       <p class="proj-desc" id="school-desc">
-        Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificata DITALS II.
+        Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificato DITALS II.
       </p>
       <div class="proj-headlines" id="school-items">
-        <div class="headline-item"><span class="headline-dot">◆</span>Corso A1 — Italiano per la vita quotidiana</div>
-        <div class="headline-item"><span class="headline-dot">◆</span>Preparazione test di cittadinanza</div>
-        <div class="headline-item"><span class="headline-dot">◆</span>Lezioni one-to-one con insegnante certificata</div>
+        <div class="headline-item">Corso A1 — Italiano per la vita quotidiana</div>
+        <div class="headline-item">Preparazione test di cittadinanza</div>
+        <div class="headline-item">Lezioni one-to-one con insegnante certificato</div>
       </div>
       <div class="proj-footer">
         <a href="https://school.kalimamedialab.com" target="_blank" rel="noopener" class="proj-visit-btn" id="school-btn">
@@ -555,7 +553,7 @@ footer{
         <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </div>
       <div class="svc-title" id="svc2-title">Lezioni di italiano one-to-one</div>
-      <p class="svc-desc" id="svc2-desc">Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificata.</p>
+      <p class="svc-desc" id="svc2-desc">Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificato.</p>
     </div>
 
     <div class="service-card fade-up">
@@ -621,12 +619,12 @@ const T = {
     'label-projects':'Testate attive','label-services':'Cosa facciamo',
     'arabita-desc':'Testata bilingue italiano-arabo su politica mediterranea, migrazione e cultura. Due lingue, una sola verità.',
     'banglita-desc':'Testata bilingue italiano-bengalese per la diaspora bangladese in Italia e in Europa. Notizie, diritti, comunità.',
-    'school-desc':'Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificata DITALS II.',
+    'school-desc':'Corsi di italiano online per immigrati, seconde generazioni e preparazione alla cittadinanza. Docente certificato DITALS II.',
     'arabita-btn':'Visita','banglita-btn':'Visita','school-btn':'Visita',
     'svc1-title':'Costruiamo il tuo media bilingue',
     'svc1-desc':'Progettiamo e lanciamo testate bilingui chiavi in mano — pipeline editoriale, traduzione AI-assistita, pubblicazione automatica. Per ONG, associazioni diasporiche, enti culturali.',
     'svc2-title':'Lezioni di italiano one-to-one',
-    'svc2-desc':'Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificata.',
+    'svc2-desc':'Lezioni online per immigrati, seconde generazioni e candidati alla cittadinanza. Orari flessibili, prezzi accessibili, docente DITALS II certificato.',
     'svc3-title':'Consulenza editoriale multilingue',
     'svc3-desc':'Strategia dei contenuti, SEO multilingue e gestione social per organizzazioni che comunicano su più lingue. Scriviamo, traduciamo, pubblichiamo.',
     'svc4-title':'Materiali didattici bilingui',
@@ -655,7 +653,7 @@ const T = {
     'label-projects':'Publications actives','label-services':'Ce que nous faisons',
     'arabita-desc':'Plateforme bilingue italo-arabe couvrant la politique méditerranéenne, la migration et la culture.',
     'banglita-desc':'Plateforme bilingue italo-bengalie pour la diaspora bangladaise en Italie et en Europe.',
-    'school-desc':'Cours d\'italien en ligne pour immigrés, deuxièmes générations et préparation à la citoyenneté. Enseignante certifiée DITALS II.',
+    'school-desc':'Cours d\'italien en ligne pour immigrés, deuxièmes générations et préparation à la citoyenneté. Enseignant certifié DITALS II.',
     'arabita-btn':'Visiter','banglita-btn':'Visiter','school-btn':'Visiter',
     'svc1-title':'Nous construisons votre média bilingue',
     'svc1-desc':'Nous concevons et lançons des plateformes d\'information bilingues clés en main — pipeline éditorial, traduction assistée par IA, publication automatisée.',
@@ -791,7 +789,7 @@ const T = {
     'label-projects':'Publicații active','label-services':'Ce facem',
     'arabita-desc':'Platformă bilingvă italiană-arabă care acoperă politica mediteraneană, migrația și cultura.',
     'banglita-desc':'Platformă bilingvă italiană-bengaleză pentru diaspora bangladeșă din Italia și Europa.',
-    'school-desc':'Cursuri online de italiană pentru imigranți și pregătire cetățenie. Profesoară certificată DITALS II.',
+    'school-desc':'Cursuri online de italiană pentru imigranți și pregătire cetățenie. Profesor certificat DITALS II.',
     'arabita-btn':'Vizitați','banglita-btn':'Vizitați','school-btn':'Vizitați',
     'svc1-title':'Construim media bilingvă pentru voi',
     'svc1-desc':'Proiectăm și lansăm platforme de știri bilingve la cheie — pipeline editorial, traducere asistată de AI.',
