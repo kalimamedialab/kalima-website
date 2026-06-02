@@ -24,8 +24,14 @@ def _fetch_feed(url, limit=3):
         risultati = []
         for entry in feed.entries[:limit]:
             title = entry.get('title', '')
-            if ' · ' in title:
-                parts = title.split(' · ', 1)
+            # prova separatori: · oppure -
+            sep = None
+            for s in [' · ', ' - ', ' – ']:
+                if s in title:
+                    sep = s
+                    break
+            if sep:
+                parts = title.split(sep, 1)
                 risultati.append({'it': parts[0].strip(), 'l2': parts[1].strip()})
             else:
                 risultati.append({'it': title.strip(), 'l2': ''})
