@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kalima Media Lab — ecosistema mediatico multilingue. Arabita, Banglita, Kalam Italiano.">
+<meta name="description" content="Kalima Media Lab — ecosistema mediatico multilingue. Arabita, Banglita, Kalima Scuola di Italiano.">
 <meta property="og:title" content="Kalima Media Lab">
 <meta property="og:description" content="Voci che attraversano confini. Storie nelle lingue che la gente parla davvero.">
 <meta property="og:image" content="/static/loghi/kalima-logo.png">
@@ -25,6 +25,24 @@ body{
   line-height:1.6;
   min-height:100vh;
   overflow-x:hidden;
+}
+/* gradient mesh animato */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 20%, rgba(201,169,110,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 85% 70%, rgba(0,106,78,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 50% 50%, rgba(244,42,65,0.04) 0%, transparent 70%),
+    #080808;
+  animation:meshMove 18s ease-in-out infinite alternate;
+}
+@keyframes meshMove{
+  0%{background-position:0% 0%,100% 100%,50% 50%}
+  50%{background-position:20% 30%,80% 60%,40% 70%}
+  100%{background-position:10% 60%,90% 20%,60% 30%}
 }
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
@@ -50,15 +68,12 @@ img{display:block;max-width:100%}
   background:rgba(8,8,8,0.96);
   backdrop-filter:blur(8px);
   border-bottom:0.5px solid var(--border);
-  padding:0 2rem;
-  height:44px;
+  padding:0.4rem 1.5rem;
   display:flex;
   align-items:center;
   gap:0;
-  overflow-x:auto;
-  scrollbar-width:none;
+  flex-wrap:wrap;
 }
-#lang-bar::-webkit-scrollbar{display:none}
 .lang-label{
   font-size:10px;
   letter-spacing:0.15em;
@@ -146,17 +161,42 @@ img{display:block;max-width:100%}
 }
 
 .project-card{
-  background:var(--surface);
-  border-right:0.5px solid var(--border);
-  border-bottom:0.5px solid var(--border);
+  background:rgba(15,15,15,0.6);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-right:0.5px solid rgba(255,255,255,0.06);
+  border-bottom:0.5px solid rgba(255,255,255,0.06);
+  border-top:0.5px solid rgba(255,255,255,0.04);
   padding:2.5rem 2rem 2rem;
   cursor:pointer;
-  transition:background .25s;
+  transition:background .3s, transform .3s, box-shadow .3s;
   display:flex;
   flex-direction:column;
+  position:relative;
+  overflow:hidden;
 }
+.project-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:0;
+  opacity:0;
+  transition:opacity .3s;
+}
+.project-card:hover{
+  background:rgba(20,20,20,0.75);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.project-card:hover::before{opacity:1}
 .project-card:last-child{border-right:none}
-.project-card:hover{background:var(--surface2)}
+/* bordo colorato top per identità brand */
+.card-arabita{border-top:2px solid rgba(201,169,110,0.5)}
+.card-arabita::before{background:radial-gradient(ellipse at 50% 0%,rgba(201,169,110,0.06) 0%,transparent 70%)}
+.card-banglita{border-top:2px solid rgba(0,106,78,0.6)}
+.card-banglita::before{background:radial-gradient(ellipse at 50% 0%,rgba(0,106,78,0.08) 0%,transparent 70%)}
+.card-scuola{border-top:2px solid rgba(100,100,200,0.4)}
+.card-scuola::before{background:radial-gradient(ellipse at 50% 0%,rgba(100,100,200,0.06) 0%,transparent 70%)}
 
 .proj-logo-wrap{
   height:90px;
@@ -265,14 +305,19 @@ img{display:block;max-width:100%}
 }
 
 .service-card{
-  background:var(--surface);
-  border-right:0.5px solid var(--border);
-  border-bottom:0.5px solid var(--border);
+  background:rgba(15,15,15,0.5);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-right:0.5px solid rgba(255,255,255,0.05);
+  border-bottom:0.5px solid rgba(255,255,255,0.05);
   padding:2rem 1.75rem;
-  transition:background .2s;
+  transition:background .3s, transform .3s;
 }
 .service-card:last-child{border-right:none}
-.service-card:hover{background:var(--surface2)}
+.service-card:hover{
+  background:rgba(25,25,25,0.7);
+  transform:translateY(-2px);
+}
 
 .svc-icon{
   width:36px;
@@ -400,7 +445,7 @@ footer{
   <div class="projects-grid">
 
     <!-- ARABITA -->
-    <article class="project-card fade-up">
+    <article class="project-card card-arabita fade-up">
       <div class="proj-logo-wrap">
         <img src="/static/loghi/logo_arabita.png" alt="Arabita">
       </div>
@@ -448,7 +493,7 @@ footer{
     </article>
 
     <!-- BANGLITA -->
-    <article class="project-card fade-up">
+    <article class="project-card card-banglita fade-up">
       <div class="proj-logo-wrap">
         <img src="/static/loghi/logo_banglita.png" alt="Banglita">
       </div>
@@ -496,9 +541,9 @@ footer{
     </article>
 
     <!-- KALAM ITALIANO -->
-    <article class="project-card fade-up">
+    <article class="project-card card-scuola fade-up">
       <div class="proj-logo-wrap">
-        <img src="/static/loghi/kalima-italiano-logo.png" alt="Kalam Italiano">
+        <img src="/static/loghi/kalima-italiano-logo.png" alt="Kalima Scuola di Italiano">
       </div>
       <div class="proj-langs">
         <span class="proj-lang-tag">🇮🇹 Italiano L2</span>
@@ -517,14 +562,6 @@ footer{
           Visita
           <svg viewBox="0 0 12 12" aria-hidden="true"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="5,2 10,2 10,7"/></svg>
         </a>
-        <div class="proj-social">
-          <a href="https://instagram.com/kalimitaliano" target="_blank" rel="noopener" aria-label="Kalam Italiano Instagram">
-            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-          </a>
-          <a href="https://wa.me/contact" target="_blank" rel="noopener" aria-label="Kalam WhatsApp">
-            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          </a>
-        </div>
       </div>
     </article>
 
@@ -578,8 +615,8 @@ footer{
 <!-- ── CONTATTO ───────────────────────────────────────────────────────────── -->
 <div id="contact">
   <p class="contact-text" id="contact-text">
-    <strong id="contact-label">Vuoi collaborare?</strong><br>
-    Scrivici e risponderemo entro 48 ore.
+    <strong id="contact-label">La tua voce merita di essere ascoltata.</strong><br>
+    Costruiamo insieme il tuo media. Scrivici — risponderemo entro 48 ore.
   </p>
   <a href="mailto:projects@kalimamedialab.com" class="contact-email">projects@kalimamedialab.com</a>
 </div>
@@ -629,7 +666,7 @@ const T = {
     'svc3-desc':'Strategia dei contenuti, SEO multilingue e gestione social per organizzazioni che comunicano su più lingue. Scriviamo, traduciamo, pubblichiamo.',
     'svc4-title':'Materiali didattici bilingui',
     'svc4-desc':'Materiali su misura — PDF, esercizi audio, moduli H5P — per scuole di italiano, centri culturali, ONG. Produzione professionale, consegna rapida.',
-    'contact-label':'Vuoi collaborare?','contact-text-sub':'Scrivici e risponderemo entro 48 ore.',
+    'contact-label':'La tua voce merita di essere ascoltata.','contact-text-sub':'Costruiamo insieme il tuo media. Scrivici — risponderemo entro 48 ore.',
   },
   en:{
     tagline:'Voices that cross borders.<br>Stories in the <em>languages people actually speak</em>.',
@@ -663,7 +700,7 @@ const T = {
     'svc3-desc':'Stratégie de contenu, SEO multilingue et gestion des réseaux sociaux pour les organisations multilingues.',
     'svc4-title':'Matériaux pédagogiques bilingues',
     'svc4-desc':'Matériaux sur mesure — PDF, exercices audio, modules H5P — pour les écoles de langue et centres culturels.',
-    'contact-label':'Vous souhaitez collaborer ?','contact-text-sub':'Écrivez-nous, nous répondrons sous 48 heures.',
+    'contact-label':'Votre voix mérite d\'être entendue.','contact-text-sub':'Construisons ensemble votre média. Écrivez-nous — nous répondrons sous 48 heures.',
   },
   es:{
     tagline:'Voces que cruzan fronteras.<br>Historias en los <em>idiomas que la gente realmente habla</em>.',
@@ -680,7 +717,7 @@ const T = {
     'svc3-desc':'Estrategia de contenidos, SEO multilingüe y gestión de redes sociales para organizaciones multilingües.',
     'svc4-title':'Materiales didácticos bilingües',
     'svc4-desc':'Materiales personalizados — PDF, ejercicios de audio, módulos H5P — para escuelas de idiomas y centros culturales.',
-    'contact-label':'¿Quieres colaborar?','contact-text-sub':'Escríbenos y responderemos en 48 horas.',
+    'contact-label':'Tu voz merece ser escuchada.','contact-text-sub':'Construyamos juntos tu medio. Escríbenos — responderemos en 48 horas.',
   },
   ar:{
     tagline:'أصوات تعبر الحدود.<br>قصص بـ<em>اللغات التي يتحدث بها الناس فعلاً</em>.',
@@ -697,7 +734,7 @@ const T = {
     'svc3-desc':'استراتيجية المحتوى، تحسين محركات البحث، وإدارة وسائل التواصل الاجتماعي للمؤسسات متعددة اللغات.',
     'svc4-title':'مواد تعليمية ثنائية اللغة',
     'svc4-desc':'مواد مخصصة — PDFs، تمارين صوتية، وحدات H5P — لمدارس اللغة والمراكز الثقافية.',
-    'contact-label':'تريد التعاون معنا؟','contact-text-sub':'اكتب لنا وسنرد خلال 48 ساعة.',
+    'contact-label':'صوتك يستحق أن يُسمع.','contact-text-sub':'لنبنِ معاً منبرك الإعلامي. اكتب لنا — سنرد خلال 48 ساعة.',
   },
   zh:{
     tagline:'跨越边界的声音。<br>用<em>人们真正说的语言</em>讲述的故事。',
