@@ -12,11 +12,12 @@
 <meta property="og:image" content="{{ sito }}/static/loghi/og-kalima.png">
 <meta property="og:locale" content="{{ lingua }}">
 <meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="only light">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/loghi/favicon-32.png">
 <link rel="apple-touch-icon" href="/static/loghi/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@700;800&amp;family=Noto+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@400;600;700;800&amp;family=Noto+Sans+Bengali:wght@400;600;700;800&amp;family=Noto+Sans+Devanagari:wght@400;600;700;800&amp;family=Noto+Sans+Ethiopic:wght@400;600;700;800&amp;family=Noto+Sans+SC:wght@400;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@700;800&amp;family=Noto+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@400;600;700;800&amp;family=Noto+Sans+Bengali:wght@400;600;700;800&amp;family=Noto+Sans+Devanagari:wght@400;600;700;800&amp;family=Noto+Sans+Ethiopic:wght@400;600;700;800&amp;family=Noto+Sans+SC:wght@400;600;700;800&amp;family=Noto+Sans+JP:wght@400;600;700;800&amp;family=Noto+Sans+Thai:wght@400;600;700;800&amp;family=Noto+Sans+Sinhala:wght@400;600;700;800&amp;display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sito.css') }}?v={{ versione_css }}">
 </head>
 <body>
@@ -24,7 +25,7 @@
 
 <header class="testata">
   <div class="contenitore">
-    <a class="testata__logo" href="/{{ lingua }}/"><img src="/static/loghi/kalima-media-lab.png" alt="Kalima Media Lab" width="1200" height="861"></a>
+    <a class="testata__logo" href="/{{ lingua }}/"><img src="/static/loghi/kalima-media-lab-fondo.png" alt="Kalima Media Lab" width="600" height="448"></a>
     <nav class="testata__menu" aria-label="{{ t('nav.principale') }}">
       <a href="/{{ lingua }}/#testate">{{ t('nav.testate') }}</a>
       <a href="/{{ lingua }}/#servizi">{{ t('nav.servizi') }}</a>

@@ -26,8 +26,10 @@ Proprietario: Marco. Lavoriamo in italiano.
 - `static/css/sito.css`: tutto lo stile. Colori del logo: blu notte `#0A1D49`, ottanio `#00AFB8`, ambra `#FBB516`
   (l'ambra mai come colore di testo piccolo su bianco). Solo proprietà logiche (inline/block): arabo, urdu e farsi
   si specchiano da soli. Caratteri: famiglia Noto (latino, arabo, bengalese, devanagari, etiope, cinese, cirillico).
-- `static/loghi/`: `kalima-media-lab.png` (logo, fondo trasparente), `icona-512.png` (globo), `favicon-32.png`,
-  `apple-touch-icon.png`, `og-kalima.png` (anteprima social 1200×630), loghi di Arabita, Banglita e scuola.
+- `static/loghi/`: `kalima-media-lab.png` (logo, fondo trasparente), `kalima-media-lab-fondo.png` (lo stesso su fondo
+  bianco arrotondato: è quello usato nella testata e per la scuola, perché resta visibile anche se il browser scurisce
+  la pagina), `icona-512.png` (globo), `favicon-32.png`, `apple-touch-icon.png`, `og-kalima.png` (anteprima social
+  1200×630), loghi di Arabita e Banglita. La pagina dichiara `color-scheme: only light` (niente tema scuro forzato).
 - `/<lingua>/privacy/`: informativa (`privacy.*`), scritta in it ed en; le altre lingue mostrano l'inglese
   (blocco con lang/dir dell'inglese, pagina noindex). `/privacy` → lingua del visitatore.
 - E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= info@)
@@ -39,8 +41,12 @@ Proprietario: Marco. Lavoriamo in italiano.
 ## Rifacimento (piano approvato il 2026-10-10)
 1. FATTO: testi in JSON, URL per lingua, cookie, hreflang, canonical, sitemap, robots, privacy.
 2. FATTO: grafica nuova (logo del 2026-10-10, nessuna bandiera, scuola con turismo, business, gruppi).
-3. Da fare: revisione delle traduzioni (wolof da un madrelingua; tigrino e wolof senza i testi nuovi, ora in inglese).
-4. Lingue nuove: una riga in `LINGUE` + un file JSON.
+3. FATTO (2026-10-10): 26 lingue; aggiunte de, pl, lv, th, ja, si (singalese per lo Sri Lanka).
+4. Da fare: revisione delle traduzioni da madrelingua (wolof; singalese, thai, lettone appena aggiunti);
+   tigrino e wolof senza i testi nuovi, ora in inglese; privacy solo it ed en.
+5. Lingue nuove: una riga in `LINGUE` + un file JSON (+ la famiglia Noto in `base.html` e `--font` se è un alfabeto nuovo).
+6. Dominio senza www: su Hostinger c'è `domains/kalimamedialab.com/public_html/.htaccess` con il 301 verso www;
+   funziona quando il record A di `kalimamedialab.com` nel DNS di Hostinger punta al server 147.93.88.185.
 
 ## Regole sui testi
 - **Mai il trattino lungo (—)** nei testi visibili, in nessuna lingua: al suo posto un punto o una virgola, secondo la frase,
