@@ -1,5 +1,5 @@
 """
-Kalima Media Lab — www.kalimamedialab.com
+Kalima Media Lab, www.kalimamedialab.com
 Flask app pubblica. Repo a sé (github.com/kalimamedialab/kalima-website), radice del servizio Railway.
 
 Lingue: una pagina per lingua, /<lingua>/. I testi stanno in traduzioni/<lingua>.json
@@ -26,29 +26,30 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 SITO = os.environ.get('SITO_URL', 'https://www.kalimamedialab.com').rstrip('/')
 COOKIE_LINGUA = 'kalima_lingua'
 
-# Lingue del sito, nell'ordine della barra. La prima è la predefinita.
+# Lingue del sito, nell'ordine del selettore. La prima è la predefinita.
+# nome = il nome della lingua scritto in quella lingua (niente bandiere: una bandiera è un paese, non una lingua).
 # Per aggiungere una lingua: una riga qui + traduzioni/<codice>.json.
 LINGUE = {
-    'it': {'bandiera': '🇮🇹', 'etichetta': 'IT', 'dir': 'ltr'},
-    'en': {'bandiera': '🇬🇧', 'etichetta': 'EN', 'dir': 'ltr'},
-    'fr': {'bandiera': '🇫🇷', 'etichetta': 'FR', 'dir': 'ltr'},
-    'es': {'bandiera': '🇪🇸', 'etichetta': 'ES', 'dir': 'ltr'},
-    'ar': {'bandiera': '🇸🇦', 'etichetta': 'AR', 'dir': 'rtl'},
-    'zh': {'bandiera': '🇨🇳', 'etichetta': 'ZH', 'dir': 'ltr'},
-    'bn': {'bandiera': '🇧🇩', 'etichetta': 'বাং', 'dir': 'ltr'},
-    'ur': {'bandiera': '🇵🇰', 'etichetta': 'UR', 'dir': 'rtl'},
-    'hi': {'bandiera': '🇮🇳', 'etichetta': 'HI', 'dir': 'ltr'},
-    'tr': {'bandiera': '🇹🇷', 'etichetta': 'TR', 'dir': 'ltr'},
-    'ro': {'bandiera': '🇷🇴', 'etichetta': 'RO', 'dir': 'ltr'},
-    'tl': {'bandiera': '🇵🇭', 'etichetta': 'TL', 'dir': 'ltr'},
-    'wo': {'bandiera': '🇸🇳', 'etichetta': 'WO', 'dir': 'ltr'},
-    'sq': {'bandiera': '🇦🇱', 'etichetta': 'SQ', 'dir': 'ltr'},
-    'am': {'bandiera': '🇪🇹', 'etichetta': 'አማ', 'dir': 'ltr'},
-    'ti': {'bandiera': '🇪🇷', 'etichetta': 'ትግ', 'dir': 'ltr'},
-    'ru': {'bandiera': '🇷🇺', 'etichetta': 'RU', 'dir': 'ltr'},
-    'be': {'bandiera': '🇧🇾', 'etichetta': 'BE', 'dir': 'ltr'},
-    'uk': {'bandiera': '🇺🇦', 'etichetta': 'UK', 'dir': 'ltr'},
-    'fa': {'bandiera': '🇮🇷', 'etichetta': 'فا', 'dir': 'rtl'},
+    'it': {'nome': 'Italiano', 'dir': 'ltr'},
+    'en': {'nome': 'English', 'dir': 'ltr'},
+    'fr': {'nome': 'Français', 'dir': 'ltr'},
+    'es': {'nome': 'Español', 'dir': 'ltr'},
+    'ar': {'nome': 'العربية', 'dir': 'rtl'},
+    'zh': {'nome': '中文', 'dir': 'ltr'},
+    'bn': {'nome': 'বাংলা', 'dir': 'ltr'},
+    'ur': {'nome': 'اردو', 'dir': 'rtl'},
+    'hi': {'nome': 'हिन्दी', 'dir': 'ltr'},
+    'tr': {'nome': 'Türkçe', 'dir': 'ltr'},
+    'ro': {'nome': 'Română', 'dir': 'ltr'},
+    'tl': {'nome': 'Tagalog', 'dir': 'ltr'},
+    'wo': {'nome': 'Wolof', 'dir': 'ltr'},
+    'sq': {'nome': 'Shqip', 'dir': 'ltr'},
+    'am': {'nome': 'አማርኛ', 'dir': 'ltr'},
+    'ti': {'nome': 'ትግርኛ', 'dir': 'ltr'},
+    'ru': {'nome': 'Русский', 'dir': 'ltr'},
+    'be': {'nome': 'Беларуская', 'dir': 'ltr'},
+    'uk': {'nome': 'Українська', 'dir': 'ltr'},
+    'fa': {'nome': 'فارسی', 'dir': 'rtl'},
 }
 PREDEFINITA = next(iter(LINGUE))
 
@@ -158,8 +159,12 @@ def _lingua_preferita():
     return request.accept_languages.best_match(list(LINGUE)) or PREDEFINITA
 
 
-def _comuni(lingua):
-    """Variabili che servono a tutti i template."""
+_CSS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'css', 'sito.css')
+VERSIONE_CSS = str(int(os.path.getmtime(_CSS)))  # cambia a ogni modifica: niente CSS vecchio in cache
+
+
+def _comuni(lingua, pagina=''):
+    """Variabili che servono a tutti i template. pagina = percorso dopo /<lingua>/ (es. 'privacy/')."""
     return dict(
         lingua=lingua,
         info_lingua=LINGUE[lingua],
@@ -168,6 +173,8 @@ def _comuni(lingua):
         sito=SITO,
         t=traduttore(lingua),
         email=email_protetta,
+        percorso_lingua=lambda codice: f'/{codice}/{pagina}',  # la stessa pagina in un'altra lingua
+        versione_css=VERSIONE_CSS,
     )
 
 
@@ -219,7 +226,7 @@ def privacy(lingua):
         dir_testo=LINGUE[lingua_testo]['dir'],
         tradotta=lingua_testo == lingua,
         lingue_privacy=_lingue_privacy(),
-        **_comuni(lingua),
+        **_comuni(lingua, 'privacy/'),
     )
     return _imposta_cookie(make_response(html), lingua)
 

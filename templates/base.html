@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="{{ lingua }}" dir="{{ info_lingua.dir }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titolo %}Kalima Media Lab{% endblock %}</title>
+<meta name="description" content="{% block descrizione %}{{ t('hero.tagline')|striptags }}{% endblock %}">
+{% block seo %}{% endblock %}
+<meta property="og:site_name" content="Kalima Media Lab">
+<meta property="og:title" content="{{ self.titolo() }}">
+<meta property="og:description" content="{{ self.descrizione() }}">
+<meta property="og:image" content="{{ sito }}/static/loghi/og-kalima.png">
+<meta property="og:locale" content="{{ lingua }}">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/loghi/favicon-32.png">
+<link rel="apple-touch-icon" href="/static/loghi/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@700;800&amp;family=Noto+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@400;600;700;800&amp;family=Noto+Sans+Bengali:wght@400;600;700;800&amp;family=Noto+Sans+Devanagari:wght@400;600;700;800&amp;family=Noto+Sans+Ethiopic:wght@400;600;700;800&amp;family=Noto+Sans+SC:wght@400;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sito.css') }}?v={{ versione_css }}">
+</head>
+<body>
+<a class="salta" href="#contenuto">{{ t('nav.salta') }}</a>
+
+<header class="testata">
+  <div class="contenitore">
+    <a class="testata__logo" href="/{{ lingua }}/"><img src="/static/loghi/kalima-media-lab.png" alt="Kalima Media Lab" width="1200" height="861"></a>
+    <nav class="testata__menu" aria-label="{{ t('nav.principale') }}">
+      <a href="/{{ lingua }}/#testate">{{ t('nav.testate') }}</a>
+      <a href="/{{ lingua }}/#servizi">{{ t('nav.servizi') }}</a>
+      <a href="/{{ lingua }}/#contatti">{{ t('footer.contatti') }}</a>
+    </nav>
+    <div class="testata__azioni">
+      <button class="lingua-btn" type="button" popovertarget="lingue" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <span>{{ info_lingua.nome }}</span>
+      </button>
+      <a class="pulsante pulsante--blu testata__cta" href="/{{ lingua }}/#contatti">{{ t('nav.cta') }}</a>
+    </div>
+  </div>
+</header>
+
+<div id="lingue" class="lingue" popover role="dialog" aria-labelledby="lingue-titolo">
+  <div class="lingue__testa">
+    <h2 id="lingue-titolo">{{ t('nav.lingue') }}</h2>
+    <button class="lingue__chiudi" type="button" popovertarget="lingue" popovertargetaction="hide" aria-label="{{ t('nav.chiudi') }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <ul class="lingue__elenco">
+    {% for codice, l in lingue.items() %}
+    <li><a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" dir="{{ l.dir }}" hreflang="{{ codice }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+<main id="contenuto">
+{% block contenuto %}{% endblock %}
+</main>
+
+<footer class="piede contenitore">
+  <nav class="piede__lingue" aria-label="{{ t('nav.lingue') }}">
+    {% for codice, l in lingue.items() %}<a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" hreflang="{{ codice }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a>
+    {% endfor %}
+  </nav>
+  <div class="piede__fondo">
+    <span>© 2026 Kalima Media Lab · Milano</span>
+    <nav aria-label="{{ t('footer.privacy') }}">
+      <a href="/{{ lingua }}/privacy/">{{ t('footer.privacy') }}</a>
+      <a href="/{{ lingua }}/#contatti">{{ t('footer.contatti') }}</a>
+    </nav>
+  </div>
+</footer>
+
+{% include '_email.html' %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-# kalimamedialab.com — istruzioni per Claude Code
+# kalimamedialab.com, istruzioni per Claude Code
 
 ## Il progetto
 Sito pubblico di Kalima Media Lab: una pagina che presenta Arabita, Banglita, la scuola e i servizi.
@@ -11,31 +11,43 @@ Proprietario: Marco. Lavoriamo in italiano.
 - Non dipende da niente del monorepo (`shared/`, `database.py`, ecc.) e non ha database.
   L'unico legame con gli altri siti sono i feed RSS letti via HTTP:
   `https://arabita.news/rss.xml` e `https://banglita.news/rss.xml` (titoli «IT · AR/BN»).
-- Deploy: servizio Railway collegato a questo repo. Avvio dal `Procfile`:
-  `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60`. Python da `runtime.txt`.
+- Deploy: servizio Railway collegato a questo repo, branch `master`; ogni push va online.
+  Avvio dal `Procfile`: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60`. Python da `runtime.txt`.
 
 ## Struttura
-- `app.py` — Flask. `LINGUE` (elenco unico delle lingue: bandiera, etichetta, direzione; la prima è la predefinita),
+- `app.py`: Flask. `LINGUE` (elenco unico delle lingue: nome nella propria lingua, direzione; la prima è la predefinita),
   `t('chiave')` per i testi, pagine `/<lingua>/`, `/` → lingua del cookie `kalima_lingua`, poi Accept-Language,
   poi italiano (302). `sitemap.xml`, `robots.txt`. Feed RSS con cache di 10 minuti.
-- `traduzioni/<lingua>.json` — testi con chiavi a punti (`hero.tagline`, `servizi.1.titolo`…). `it.json` è il riferimento:
+- `traduzioni/<lingua>.json`: testi con chiavi a punti (`hero.tagline`, `servizi.1.titolo`…). `it.json` è il riferimento:
   le chiavi mancanti in una lingua si mostrano in inglese, e se mancano anche lì in italiano.
-- `/<lingua>/privacy/` — informativa (`privacy.*`), scritta in it ed en; le altre lingue mostrano l'inglese
+  `hero.tagline` = due frasi separate da `<br>`: la prima è il titolo, la seconda il sottotitolo.
+- `templates/base.html` (testata, selettore delle lingue in un popover senza JavaScript, piede),
+  `index.html` (home), `privacy.html`, `_email.html`.
+- `static/css/sito.css`: tutto lo stile. Colori del logo: blu notte `#0A1D49`, ottanio `#00AFB8`, ambra `#FBB516`
+  (l'ambra mai come colore di testo piccolo su bianco). Solo proprietà logiche (inline/block): arabo, urdu e farsi
+  si specchiano da soli. Caratteri: famiglia Noto (latino, arabo, bengalese, devanagari, etiope, cinese, cirillico).
+- `static/loghi/`: `kalima-media-lab.png` (logo, fondo trasparente), `icona-512.png` (globo), `favicon-32.png`,
+  `apple-touch-icon.png`, `og-kalima.png` (anteprima social 1200×630), loghi di Arabita, Banglita e scuola.
+- `/<lingua>/privacy/`: informativa (`privacy.*`), scritta in it ed en; le altre lingue mostrano l'inglese
   (blocco con lang/dir dell'inglese, pagina noindex). `/privacy` → lingua del visitatore.
 - E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= info@)
   producono un link che `templates/_email.html` ricompone nel browser.
 - `SITO` (canonical, hreflang, sitemap) = `https://www.kalimamedialab.com`: il dominio senza www oggi dà 403
   (record A del DNS non collegato al servizio Railway). Si cambia con la variabile `SITO_URL`.
-- `controlla_traduzioni.py` — elenca le chiavi mancanti o in più per ogni lingua.
-- `templates/index.html` — la pagina (HTML e CSS); i testi vengono da `t()`.
-- `static/loghi/` — loghi PNG.
+- `controlla_traduzioni.py`: elenca le chiavi mancanti o in più per ogni lingua.
 
-## Rifacimento in corso (piano approvato il 2026-10-10)
-1. FATTO (2026-10-10): testi in `traduzioni/<lingua>.json`, `LINGUE` in `app.py`, URL `/<lingua>/`, cookie,
-   hreflang, canonical, sitemap, robots. Da fare: revisione delle traduzioni (wolof, testi accorciati).
-2. Grafica nuova: CSS in file, proprietà logiche (RTL senza CSS a parte), font per alfabeto caricati solo per la lingua della pagina.
-3. Lingue nuove: una riga in `LINGUE` + un file JSON (+ font se serve).
-Lingue: le 20 di oggi.
+## Rifacimento (piano approvato il 2026-10-10)
+1. FATTO: testi in JSON, URL per lingua, cookie, hreflang, canonical, sitemap, robots, privacy.
+2. FATTO: grafica nuova (logo del 2026-10-10, nessuna bandiera, scuola con turismo, business, gruppi).
+3. Da fare: revisione delle traduzioni (wolof da un madrelingua; tigrino e wolof senza i testi nuovi, ora in inglese).
+4. Lingue nuove: una riga in `LINGUE` + un file JSON.
+
+## Regole sui testi
+- **Mai il trattino lungo (—)** nei testi visibili, in nessuna lingua: al suo posto un punto o una virgola, secondo la frase,
+  con la punteggiatura della lingua (virgola araba «،», cinese «，», etiope «፣»; punto cinese «。», danda «।» per hindi
+  e bengalese, «።» etiope). Nei titoli delle pagine: « · ».
+- Nessun «Lavora con noi»: Marco non cerca collaboratori. Il pulsante giusto è per chi vuole un lavoro fatto da noi
+  («Parliamo del tuo progetto», che porta ai contatti).
 
 ## Regole
 - Leggi un file per intero prima di modificarlo; mostra il diff prima di cambiare file esistenti.

@@ -3,8 +3,9 @@ Controlla i file traduzioni/<lingua>.json rispetto all'italiano (il riferimento)
 
     python controlla_traduzioni.py
 
-Per ogni lingua di LINGUE (app.py) elenca le chiavi mancanti, che sul sito ricadono
-sull'italiano, e le chiavi in più che l'italiano non ha (errori di battitura).
+Per ogni lingua di LINGUE (app.py) elenca le chiavi mancanti, che sul sito si vedono
+in inglese (o in italiano se mancano anche lì), e le chiavi in più che l'italiano non ha
+(errori di battitura).
 Esce con 1 se ci sono chiavi in più o file mancanti.
 """
 
@@ -36,7 +37,7 @@ for codice in LINGUE:
         continue
     mancanti = [k for k in riferimento if k not in testi]
     in_piu = [k for k in testi if k not in riferimento]
-    stato = 'completo' if not mancanti else f'{len(mancanti)} mancanti (in italiano): {", ".join(mancanti)}'
+    stato = 'completo' if not mancanti else f'{len(mancanti)} mancanti (si vedono in inglese, o in italiano): {", ".join(mancanti)}'
     print(f'{codice}: {stato}')
     if in_piu:
         print(f'   chiavi in più, non esistono in {PREDEFINITA}: {", ".join(in_piu)}')
