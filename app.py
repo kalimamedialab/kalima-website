@@ -3,7 +3,8 @@ Kalima Media Lab — www.kalimamedialab.com
 Flask app pubblica. Repo a sé (github.com/kalimamedialab/kalima-website), radice del servizio Railway.
 
 Lingue: una pagina per lingua, /<lingua>/. I testi stanno in traduzioni/<lingua>.json
-(chiavi a punti); l'italiano è il riferimento e copre le chiavi mancanti delle altre lingue.
+(chiavi a punti); l'italiano è il riferimento. Una chiave che manca in una lingua si mostra
+in inglese, e se manca anche lì in italiano.
 / porta alla lingua del visitatore: cookie kalima_lingua, poi Accept-Language, poi italiano.
 """
 
@@ -15,10 +16,14 @@ from xml.sax.saxutils import escape
 
 from flask import Flask, abort, make_response, redirect, render_template, request
 from markupsafe import Markup
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+# Railway sta davanti all'app: senza questo Flask crede di essere in http (redirect in http://, cookie senza Secure).
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-SITO = os.environ.get('SITO_URL', 'https://kalimamedialab.com').rstrip('/')
+# Indirizzo usato in canonical, hreflang e sitemap. www perché kalimamedialab.com senza www oggi dà 403 (DNS).
+SITO = os.environ.get('SITO_URL', 'https://www.kalimamedialab.com').rstrip('/')
 COOKIE_LINGUA = 'kalima_lingua'
 
 # Lingue del sito, nell'ordine della barra. La prima è la predefinita.
@@ -62,13 +67,39 @@ def _carica_traduzioni():
 TRADUZIONI = _carica_traduzioni()
 
 
+RICADUTA = 'en'  # lingua usata per le chiavi che mancano, prima dell'italiano
+
+
+def lingua_del_testo(lingua, chiave):
+    """In che lingua si mostra davvero una chiave: la lingua della pagina, poi l'inglese, poi l'italiano."""
+    for codice in (lingua, RICADUTA, PREDEFINITA):
+        if chiave in TRADUZIONI.get(codice, {}):
+            return codice
+    return None
+
+
+def email_protetta(utente, dominio='kalimamedialab.com', classe=''):
+    """Indirizzo e-mail non leggibile dai programmi che raccolgono indirizzi: nell'HTML ci sono solo
+    i due pezzi rovesciati; lo script in fondo alle pagine li ricompone in un link mailto.
+    Senza JavaScript si legge «utente [at] dominio [dot] com»."""
+    return Markup(
+        '<a class="email-protetta {classe}" href="#" data-u="{u}" data-d="{d}">{testo}</a>'
+    ).format(classe=classe, u=utente[::-1], d=dominio[::-1],
+             testo=f'{utente} [at] {dominio.replace(".", " [dot] ")}')
+
+
+EMAIL_INFO = email_protetta('info')
+
+
 def traduttore(lingua):
-    """t('chiave') nella lingua della pagina; se manca, l'italiano; se manca anche quello, la chiave."""
+    """t('chiave') nella lingua della pagina (con le ricadute di lingua_del_testo); se non c'è da nessuna parte, la chiave.
+    {email} nel testo diventa l'indirizzo info protetto."""
     def t(chiave):
-        testo = TRADUZIONI[lingua].get(chiave)
-        if testo is None:
-            testo = TRADUZIONI[PREDEFINITA].get(chiave, chiave)
-        return Markup(testo)  # i testi sono nostri e possono contenere <br>, <em>
+        codice = lingua_del_testo(lingua, chiave)
+        if codice is None:
+            return chiave
+        # i testi sono nostri e possono contenere <br>, <em>, <ul>
+        return Markup(TRADUZIONI[codice][chiave]).replace('{email}', EMAIL_INFO)
     return t
 
 
@@ -127,20 +158,35 @@ def _lingua_preferita():
     return request.accept_languages.best_match(list(LINGUE)) or PREDEFINITA
 
 
-def _pagina(lingua, stato=200):
-    arabita_titoli, banglita_titoli = get_titoli()
-    html = render_template(
-        'index.html',
+def _comuni(lingua):
+    """Variabili che servono a tutti i template."""
+    return dict(
         lingua=lingua,
         info_lingua=LINGUE[lingua],
         lingue=LINGUE,
         predefinita=PREDEFINITA,
         sito=SITO,
         t=traduttore(lingua),
+        email=email_protetta,
+    )
+
+
+def _pagina(lingua, stato=200):
+    arabita_titoli, banglita_titoli = get_titoli()
+    html = render_template(
+        'index.html',
         arabita_titoli=arabita_titoli,
         banglita_titoli=banglita_titoli,
+        **_comuni(lingua),
     )
     return make_response(html, stato)
+
+
+def _imposta_cookie(risposta, lingua):
+    # Chi apre una lingua la sceglie: la ritroverà su /
+    risposta.set_cookie(COOKIE_LINGUA, lingua, max_age=365 * 24 * 3600, samesite='Lax',
+                        secure=request.is_secure)
+    return risposta
 
 
 @app.route('/')
@@ -154,10 +200,35 @@ def radice():
 def index(lingua):
     if lingua not in LINGUE:
         abort(404)
-    risposta = _pagina(lingua)
-    # Chi apre una lingua la sceglie: la ritroverà su /
-    risposta.set_cookie(COOKIE_LINGUA, lingua, max_age=365 * 24 * 3600, samesite='Lax',
-                        secure=request.is_secure)
+    return _imposta_cookie(_pagina(lingua), lingua)
+
+
+# Lingue con l'informativa privacy scritta nella loro lingua (le altre mostrano la ricaduta).
+def _lingue_privacy():
+    return [c for c in LINGUE if 'privacy.2.testo' in TRADUZIONI[c]]
+
+
+@app.route('/<lingua>/privacy/')
+def privacy(lingua):
+    if lingua not in LINGUE:
+        abort(404)
+    lingua_testo = lingua_del_testo(lingua, 'privacy.2.testo')
+    html = render_template(
+        'privacy.html',
+        lingua_testo=lingua_testo,
+        dir_testo=LINGUE[lingua_testo]['dir'],
+        tradotta=lingua_testo == lingua,
+        lingue_privacy=_lingue_privacy(),
+        **_comuni(lingua),
+    )
+    return _imposta_cookie(make_response(html), lingua)
+
+
+@app.route('/privacy')
+@app.route('/privacy/')
+def privacy_senza_lingua():
+    risposta = redirect(f'/{_lingua_preferita()}/privacy/', 302)
+    risposta.headers['Vary'] = 'Cookie, Accept-Language'
     return risposta
 
 
@@ -171,6 +242,13 @@ def sitemap():
     ) + f'<xhtml:link rel="alternate" hreflang="x-default" href="{escape(SITO)}/"/>'
     for c in LINGUE:
         righe.append(f'<url><loc>{escape(SITO)}/{c}/</loc>{alternative}</url>')
+    # Privacy: solo le versioni scritte davvero nella loro lingua.
+    lingue_privacy = _lingue_privacy()
+    alternative_privacy = ''.join(
+        f'<xhtml:link rel="alternate" hreflang="{c}" href="{escape(SITO)}/{c}/privacy/"/>' for c in lingue_privacy
+    )
+    for c in lingue_privacy:
+        righe.append(f'<url><loc>{escape(SITO)}/{c}/privacy/</loc>{alternative_privacy}</url>')
     righe.append('</urlset>')
     risposta = make_response('\n'.join(righe))
     risposta.headers['Content-Type'] = 'application/xml; charset=utf-8'
