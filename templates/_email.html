@@ -1,0 +1,9 @@
+<script>
+/* Ricompone gli indirizzi e-mail protetti (email_protetta in app.py): nell'HTML ci sono solo i pezzi rovesciati. */
+document.querySelectorAll('.email-protetta').forEach(function (a) {
+  var giro = function (s) { return s.split('').reverse().join(''); };
+  var indirizzo = giro(a.dataset.u) + '@' + giro(a.dataset.d);
+  a.href = 'mailto:' + indirizzo;
+  a.textContent = indirizzo;
+});
+</script>

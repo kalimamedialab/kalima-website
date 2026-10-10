@@ -624,18 +624,18 @@ footer{
     <strong id="contact-label">{{ t('contatto.titolo') }}</strong><br>
     {{ t('contatto.testo') }}
   </p>
-  <a href="mailto:projects@kalimamedialab.com" class="contact-email">projects@kalimamedialab.com</a>
+  {{ email('projects', classe='contact-email') }}
 </div>
 
 <!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
 <footer>
   <span class="footer-copy">© 2026 Kalima Media Lab</span>
   <div class="footer-links">
-    <a href="/privacy">{{ t('footer.privacy') }}</a>
-    <a href="mailto:projects@kalimamedialab.com">{{ t('footer.contatti') }}</a>
+    <a href="/{{ lingua }}/privacy/">{{ t('footer.privacy') }}</a>
+    <a href="#contact">{{ t('footer.contatti') }}</a>
   </div>
 </footer>
 
-
+{% include '_email.html' %}
 </body>
 </html>

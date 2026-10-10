@@ -19,7 +19,13 @@ Proprietario: Marco. Lavoriamo in italiano.
   `t('chiave')` per i testi, pagine `/<lingua>/`, `/` → lingua del cookie `kalima_lingua`, poi Accept-Language,
   poi italiano (302). `sitemap.xml`, `robots.txt`. Feed RSS con cache di 10 minuti.
 - `traduzioni/<lingua>.json` — testi con chiavi a punti (`hero.tagline`, `servizi.1.titolo`…). `it.json` è il riferimento:
-  le chiavi mancanti in una lingua si mostrano in italiano.
+  le chiavi mancanti in una lingua si mostrano in inglese, e se mancano anche lì in italiano.
+- `/<lingua>/privacy/` — informativa (`privacy.*`), scritta in it ed en; le altre lingue mostrano l'inglese
+  (blocco con lang/dir dell'inglese, pagina noindex). `/privacy` → lingua del visitatore.
+- E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= info@)
+  producono un link che `templates/_email.html` ricompone nel browser.
+- `SITO` (canonical, hreflang, sitemap) = `https://www.kalimamedialab.com`: il dominio senza www oggi dà 403
+  (record A del DNS non collegato al servizio Railway). Si cambia con la variabile `SITO_URL`.
 - `controlla_traduzioni.py` — elenca le chiavi mancanti o in più per ogni lingua.
 - `templates/index.html` — la pagina (HTML e CSS); i testi vengono da `t()`.
 - `static/loghi/` — loghi PNG.
