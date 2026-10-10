@@ -14,14 +14,19 @@ Proprietario: Marco. Lavoriamo in italiano.
 - Deploy: servizio Railway collegato a questo repo. Avvio dal `Procfile`:
   `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60`. Python da `runtime.txt`.
 
-## Struttura (oggi)
-- `app.py` — Flask: route `/`, lettura dei due feed RSS.
-- `templates/index.html` — tutta la pagina: HTML, CSS e JS. Le 20 lingue sono nell'oggetto JS `T`.
+## Struttura
+- `app.py` — Flask. `LINGUE` (elenco unico delle lingue: bandiera, etichetta, direzione; la prima è la predefinita),
+  `t('chiave')` per i testi, pagine `/<lingua>/`, `/` → lingua del cookie `kalima_lingua`, poi Accept-Language,
+  poi italiano (302). `sitemap.xml`, `robots.txt`. Feed RSS con cache di 10 minuti.
+- `traduzioni/<lingua>.json` — testi con chiavi a punti (`hero.tagline`, `servizi.1.titolo`…). `it.json` è il riferimento:
+  le chiavi mancanti in una lingua si mostrano in italiano.
+- `controlla_traduzioni.py` — elenca le chiavi mancanti o in più per ogni lingua.
+- `templates/index.html` — la pagina (HTML e CSS); i testi vengono da `t()`.
 - `static/loghi/` — loghi PNG.
 
 ## Rifacimento in corso (piano approvato il 2026-10-10)
-1. Testi in `traduzioni/<lingua>.json` (italiano = riferimento), elenco unico delle lingue `LINGUE` in `app.py`,
-   URL per lingua `/<lingua>/` generate dal server, cookie `kalima_lingua`, hreflang, canonical, sitemap, robots.
+1. FATTO (2026-10-10): testi in `traduzioni/<lingua>.json`, `LINGUE` in `app.py`, URL `/<lingua>/`, cookie,
+   hreflang, canonical, sitemap, robots. Da fare: revisione delle traduzioni (wolof, testi accorciati).
 2. Grafica nuova: CSS in file, proprietà logiche (RTL senza CSS a parte), font per alfabeto caricati solo per la lingua della pagina.
 3. Lingue nuove: una riga in `LINGUE` + un file JSON (+ font se serve).
 Lingue: le 20 di oggi.
