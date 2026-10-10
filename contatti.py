@@ -26,7 +26,7 @@ from email.message import EmailMessage
 CARTELLA = os.path.dirname(os.path.abspath(__file__))
 LINEE_GUIDA = os.path.join(CARTELLA, 'ia', 'linee_guida.md')
 
-TEMI = ('ong', 'media', 'materiali', 'scuola', 'altro')
+TEMI = ('ong', 'media', 'materiali', 'comunicazione', 'scuola', 'altro')
 
 # Regole fisse: valgono qualunque cosa ci sia nelle linee guida.
 REGOLE = """Sei l'assistente di Kalima Media Lab (Milano). Dal modulo di contatto del sito kalimamedialab.com

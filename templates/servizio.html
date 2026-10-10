@@ -1,32 +1,33 @@
 {% extends 'base.html' %}
+{# Pagina di un servizio. p = prefisso delle chiavi (ong, media…), slug = indirizzo, icone = una per blocco: vedi PAGINE in app.py. #}
 
-{% block titolo %}{{ t('ong.titolo') }} · Kalima Media Lab{% endblock %}
-{% block descrizione %}{{ t('ong.meta') }}{% endblock %}
+{% block titolo %}{{ t(p ~ '.titolo') }} · Kalima Media Lab{% endblock %}
+{% block descrizione %}{{ t(p ~ '.meta') }}{% endblock %}
 
 {% block seo %}
 {% if tradotta %}
-<link rel="canonical" href="{{ sito }}/{{ lingua }}/ong/">
-{% for codice in lingue_ong %}<link rel="alternate" hreflang="{{ hreflang(codice) }}" href="{{ sito }}/{{ codice }}/ong/">
-{% endfor %}<link rel="alternate" hreflang="x-default" href="{{ sito }}/en/ong/">
+<link rel="canonical" href="{{ sito }}/{{ lingua }}/{{ slug }}/">
+{% for codice in lingue_pagina %}<link rel="alternate" hreflang="{{ hreflang(codice) }}" href="{{ sito }}/{{ codice }}/{{ slug }}/">
+{% endfor %}<link rel="alternate" hreflang="x-default" href="{{ sito }}/en/{{ slug }}/">
 {% else %}
 <meta name="robots" content="noindex, follow">
 {% endif %}
-<meta property="og:url" content="{{ sito }}/{{ lingua }}/ong/">
-{% set offerte = [] %}{% for n in range(1, 7) %}{% set _ = offerte.append({"@type": "Offer", "itemOffered": {"@type": "Service", "name": t('ong.%d.t' % n)|striptags, "description": t('ong.%d.d' % n)|striptags}}) %}{% endfor %}
+<meta property="og:url" content="{{ sito }}/{{ lingua }}/{{ slug }}/">
+{% set offerte = [] %}{% for n in range(1, icone|length + 1) %}{% set _ = offerte.append({"@type": "Offer", "itemOffered": {"@type": "Service", "name": t(p ~ '.%d.t' % n)|striptags, "description": t(p ~ '.%d.d' % n)|striptags}}) %}{% endfor %}
 <script type="application/ld+json">
 {{ {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": t('ong.titolo')|striptags,
-  "description": t('ong.meta')|striptags,
-  "url": sito ~ "/" ~ lingua ~ "/ong/",
-  "serviceType": t('ong.titolo')|striptags,
+  "name": t(p ~ '.titolo')|striptags,
+  "description": t(p ~ '.meta')|striptags,
+  "url": sito ~ "/" ~ lingua ~ "/" ~ slug ~ "/",
+  "serviceType": t(p ~ '.titolo')|striptags,
   "areaServed": "Worldwide",
-  "audience": {"@type": "Audience", "audienceType": "NGOs, nonprofits"},
+  "audience": {"@type": "Audience", "audienceType": pubblico},
   "provider": {"@type": "Organization", "name": "Kalima Media Lab", "url": sito ~ "/"},
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": t('ong.cosa')|striptags,
+    "name": t(p ~ '.cosa')|striptags,
     "itemListElement": offerte
   }
 }|tojson }}
@@ -35,21 +36,13 @@
 
 
 {% block contenuto %}
-{% set icone = [
-  '<path d="M3 7h18v13H3zM8 3h8v4"/><circle cx="11" cy="13" r="3"/><path d="m13.5 15.5 2.5 2.5"/>',
-  '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
-  '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/>',
-  '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
-  '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
-  '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
-] %}
 <div lang="{{ lingua_testo }}" dir="{{ dir_testo }}">
-<section class="apertura apertura--ong">
+<section class="apertura apertura--servizio">
   <img class="apertura__globo" src="/static/loghi/icona-512.png" alt="" width="512" height="512" aria-hidden="true">
   <div class="contenitore">
     <span class="apertura__occhiello" lang="it" dir="ltr">Kalima Media Lab · Milano</span>
-    <h1>{{ t('ong.titolo') }}</h1>
-    <p class="apertura__sotto">{{ t('ong.sotto') }}</p>
+    <h1>{{ t(p ~ '.titolo') }}</h1>
+    <p class="apertura__sotto">{{ t(p ~ '.sotto') }}</p>
     <div class="apertura__azioni">
       <a class="pulsante pulsante--ambra" href="#modulo">{{ t('modulo.titolo') }}</a>
     </div>
@@ -58,12 +51,12 @@
 
 <section class="sezione">
   <div class="contenitore">
-    <div class="sezione__testa"><h2>{{ t('ong.cosa') }}</h2></div>
+    <div class="sezione__testa"><h2>{{ t(p ~ '.cosa') }}</h2></div>
     <div class="servizi">
-      {% for n in range(1, 7) %}
+      {% for n in range(1, icone|length + 1) %}
       <div class="servizio">
         <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">{{ icone[n - 1]|safe }}</svg></span>
-        <h3>{{ t('ong.%d.t' % n) }}</h3><p>{{ t('ong.%d.d' % n) }}</p>
+        <h3>{{ t(p ~ '.%d.t' % n) }}</h3><p>{{ t(p ~ '.%d.d' % n) }}</p>
       </div>
       {% endfor %}
     </div>
@@ -73,17 +66,17 @@
 <section class="sezione sezione--chiara">
   <div class="contenitore ong-due">
     <div class="ong-perche">
-      <h2>{{ t('ong.perche.t') }}</h2>
-      <p>{{ t('ong.perche.d') }}</p>
+      <h2>{{ t(p ~ '.perche.t') }}</h2>
+      <p>{{ t(p ~ '.perche.d') }}</p>
       <div class="ong-loghi">
         <a href="https://arabita.news" target="_blank" rel="noopener"><img src="/static/loghi/logo_arabita.png" alt="Arabita" width="1162" height="462" loading="lazy"></a>
         <a href="https://banglita.news" target="_blank" rel="noopener"><img src="/static/loghi/logo_banglita.png" alt="Banglita" width="886" height="593" loading="lazy"></a>
       </div>
     </div>
     <div class="ong-come">
-      <h2>{{ t('ong.come.t') }}</h2>
+      <h2>{{ t(p ~ '.come.t') }}</h2>
       <ol>
-        {% for n in range(1, 4) %}<li>{{ t('ong.come.%d' % n) }}</li>{% endfor %}
+        {% for n in range(1, 4) %}<li>{{ t(p ~ '.come.%d' % n) }}</li>{% endfor %}
       </ol>
     </div>
   </div>
@@ -97,7 +90,7 @@
       <p>{{ t('contatto.testo') }}</p>
       <p class="contatti__email">{{ email('projects') }}</p>
     </div>
-    {% set origine = 'ong' %}
+    {% set origine = slug %}
     {% include '_modulo.html' %}
   </div>
 </section>

@@ -1,7 +1,7 @@
-{# Modulo di contatto. Variabili facoltative: origine ('home' | 'ong'), modulo (valori già scritti), errore (chiave del testo). #}
+{# Modulo di contatto. Variabili facoltative: origine ('home' o lo slug della pagina), tema_pagina, modulo (valori già scritti), errore (chiave del testo). #}
 {% set m = modulo or {} %}
 {% set origine = origine|default('home') %}
-{% set tema_scelto = m.tema or ('ong' if origine == 'ong' else '') %}
+{% set tema_scelto = m.tema or tema_pagina|default('') %}
 <form class="modulo" method="post" action="/{{ lingua }}/contatto/#modulo" id="modulo">
   <h3 class="modulo__titolo">{{ t('modulo.titolo') }}</h3>
   {% if errore %}<p class="modulo__errore" role="alert">{{ t(errore) }}</p>{% endif %}
@@ -21,7 +21,7 @@
       <input type="text" name="organizzazione" maxlength="200" autocomplete="organization" value="{{ m.organizzazione }}"></label>
     <label class="campo"><span>{{ t('modulo.tema') }}</span>
       <select name="tema">
-        {% for tema in ['ong', 'media', 'materiali', 'scuola', 'altro'] %}
+        {% for tema in ['ong', 'media', 'materiali', 'comunicazione', 'scuola', 'altro'] %}
         <option value="{{ tema }}"{% if tema == tema_scelto %} selected{% endif %}>{{ t('modulo.tema.' ~ tema) }}</option>
         {% endfor %}
       </select></label>

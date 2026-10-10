@@ -6,7 +6,7 @@ Lingue: una pagina per lingua, /<lingua>/. I testi stanno in traduzioni/<lingua>
 (chiavi a punti); l'italiano è il riferimento. Una chiave che manca in una lingua si mostra
 in inglese, e se manca anche lì in italiano.
 / porta alla lingua del visitatore: cookie kalima_lingua, poi Accept-Language, poi italiano.
-/<lingua>/ong/: pagina «Intelligenza artificiale per ONG e terzo settore».
+Pagine dei servizi (/<lingua>/ong/, /<lingua>/media-bilingue/…): elenco in PAGINE, modello templates/servizio.html.
 Modulo di contatto (home e pagina ONG): POST /<lingua>/contatto/, risposta automatica in contatti.py.
 """
 
@@ -243,8 +243,39 @@ def _lingue_privacy():
     return _lingue_con('privacy.2.testo')
 
 
-def _lingue_ong():
-    return _lingue_con('ong.1.d')
+# Pagine dei servizi. Chiave = indirizzo (/<lingua>/<slug>/).
+# p = prefisso delle chiavi nei JSON (p.titolo, p.meta, p.sotto, p.cosa, p.1.t/p.1.d…, p.perche.t/d, p.come.t, p.come.1-3);
+# tema = voce preselezionata nel modulo; icone = una per blocco (percorsi SVG 24×24).
+ICONA_GLOBO = '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'
+ICONA_DOCUMENTO = '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/>'
+PAGINE = {
+    'ong': dict(p='ong', tema='ong', pubblico='NGOs, nonprofits', icone=[
+        '<path d="M3 7h18v13H3zM8 3h8v4"/><circle cx="11" cy="13" r="3"/><path d="m13.5 15.5 2.5 2.5"/>',
+        '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+        ICONA_DOCUMENTO,
+        '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+        '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+        ICONA_GLOBO,
+    ]),
+    'media-bilingue': dict(p='media', tema='media', pubblico='Diaspora associations, NGOs, cultural institutions', icone=[
+        '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+        '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+        '<path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/>',
+        '<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h6M8 11h6"/>',
+    ]),
+    'materiali-didattici': dict(p='materiali', tema='materiali', pubblico='Italian language schools, cultural centres, NGOs', icone=[
+        ICONA_DOCUMENTO,
+        '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+        '<path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 11v2"/>',
+        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    ]),
+    'comunicazione-multilingue': dict(p='comunicazione', tema='comunicazione', pubblico='Organizations with multilingual audiences', icone=[
+        ICONA_GLOBO,
+        '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+        '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
+        '<path d="M4 5h8M8 3v2M5 9c1.5 3 4 5 7 6M11 5c-1 4-3.5 7-7 9"/><path d="m13 21 4-9 4 9M14.5 18h5"/>',
+    ]),
+}
 
 
 @app.route('/<lingua>/privacy/')
@@ -271,25 +302,31 @@ def privacy_senza_lingua():
     return risposta
 
 
-def _pagina_ong(lingua, stato=200, **modulo):
-    lingua_testo = lingua_del_testo(lingua, 'ong.1.d')
+def _pagina_servizio(lingua, slug, stato=200, **modulo):
+    pagina = PAGINE[slug]
+    lingua_testo = lingua_del_testo(lingua, f"{pagina['p']}.1.d")
     html = render_template(
-        'ong.html',
+        'servizio.html',
+        slug=slug,
+        p=pagina['p'],
+        icone=pagina['icone'],
+        pubblico=pagina['pubblico'],
+        tema_pagina=pagina['tema'],
         lingua_testo=lingua_testo,
         dir_testo=LINGUE[lingua_testo]['dir'],
         tradotta=lingua_testo == lingua,
-        lingue_ong=_lingue_ong(),
+        lingue_pagina=_lingue_con(f"{pagina['p']}.1.d"),
         **modulo,
-        **_comuni(lingua, 'ong/'),
+        **_comuni(lingua, f'{slug}/'),
     )
     return make_response(html, stato)
 
 
-@app.route('/<lingua>/ong/')
-def ong(lingua):
-    if lingua not in LINGUE:
+@app.route('/<lingua>/<slug>/')
+def servizio(lingua, slug):
+    if lingua not in LINGUE or slug not in PAGINE:
         abort(404)
-    return _imposta_cookie(_pagina_ong(lingua), lingua)
+    return _imposta_cookie(_pagina_servizio(lingua, slug), lingua)
 
 
 # ── Modulo di contatto ──────────────────────────────────────────────────────
@@ -314,7 +351,7 @@ def contatto(lingua):
     if lingua not in LINGUE:
         abort(404)
     f = request.form
-    origine = 'ong' if f.get('origine') == 'ong' else 'home'
+    origine = f.get('origine') if f.get('origine') in PAGINE else 'home'
     dati = {
         'nome': f.get('nome', '').strip()[:120],
         'email': f.get('email', '').strip()[:200],
@@ -340,8 +377,10 @@ def contatto(lingua):
     elif _troppi_invii(request.remote_addr or '-'):
         errore = 'modulo.troppi'
     if errore:
-        pagina = _pagina_ong if origine == 'ong' else _pagina
-        return pagina(lingua, 400 if errore == 'modulo.errore' else 429, modulo=dati, errore=errore)
+        stato = 400 if errore == 'modulo.errore' else 429
+        if origine in PAGINE:
+            return _pagina_servizio(lingua, origine, stato, modulo=dati, errore=errore)
+        return _pagina(lingua, stato, modulo=dati, errore=errore)
 
     t = traduttore(lingua)
     riserva = (str(t('email.oggetto')), str(t('email.testo')).replace('{nome}', dati['nome']))
@@ -373,7 +412,8 @@ def sitemap():
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
              'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
     righe += _url_sitemap('', LINGUE, x_default=RICADUTA)
-    righe += _url_sitemap('ong/', _lingue_ong(), x_default=RICADUTA)
+    for slug, pagina in PAGINE.items():
+        righe += _url_sitemap(f'{slug}/', _lingue_con(f"{pagina['p']}.1.d"), x_default=RICADUTA)
     # Privacy: solo le versioni scritte davvero nella loro lingua.
     righe += _url_sitemap('privacy/', _lingue_privacy())
     righe.append('</urlset>')
