@@ -6,21 +6,26 @@ Lingue: una pagina per lingua, /<lingua>/. I testi stanno in traduzioni/<lingua>
 (chiavi a punti); l'italiano è il riferimento. Una chiave che manca in una lingua si mostra
 in inglese, e se manca anche lì in italiano.
 / porta alla lingua del visitatore: cookie kalima_lingua, poi Accept-Language, poi italiano.
+/<lingua>/ong/: pagina «Intelligenza artificiale per ONG e terzo settore».
+Modulo di contatto (home e pagina ONG): POST /<lingua>/contatto/, risposta automatica in contatti.py.
 """
 
 import json
 import os
+import re
 import time
 import urllib.request
 from xml.sax.saxutils import escape
 
 from flask import Flask, abort, make_response, redirect, render_template, request
+
+import contatti
 from markupsafe import Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 # Railway sta davanti all'app: senza questo Flask crede di essere in http (redirect in http://, cookie senza Secure).
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 # Indirizzo usato in canonical, hreflang e sitemap. www perché kalimamedialab.com senza www oggi dà 403 (DNS).
 SITO = os.environ.get('SITO_URL', 'https://www.kalimamedialab.com').rstrip('/')
@@ -28,12 +33,15 @@ COOKIE_LINGUA = 'kalima_lingua'
 
 # Lingue del sito, nell'ordine del selettore. La prima è la predefinita.
 # nome = il nome della lingua scritto in quella lingua (niente bandiere: una bandiera è un paese, non una lingua).
+# hreflang: solo se diverso dal codice (pt = portoghese del Brasile).
+# ricaduta: lingua dei testi che mancano (predefinita l'inglese; il francese dove è la seconda lingua).
 # Per aggiungere una lingua: una riga qui + traduzioni/<codice>.json.
 LINGUE = {
     'it': {'nome': 'Italiano', 'dir': 'ltr'},
     'en': {'nome': 'English', 'dir': 'ltr'},
     'fr': {'nome': 'Français', 'dir': 'ltr'},
     'es': {'nome': 'Español', 'dir': 'ltr'},
+    'pt': {'nome': 'Português', 'dir': 'ltr', 'hreflang': 'pt-BR'},
     'de': {'nome': 'Deutsch', 'dir': 'ltr'},
     'ro': {'nome': 'Română', 'dir': 'ltr'},
     'pl': {'nome': 'Polski', 'dir': 'ltr'},
@@ -55,7 +63,7 @@ LINGUE = {
     'tl': {'nome': 'Tagalog', 'dir': 'ltr'},
     'am': {'nome': 'አማርኛ', 'dir': 'ltr'},
     'ti': {'nome': 'ትግርኛ', 'dir': 'ltr'},
-    'wo': {'nome': 'Wolof', 'dir': 'ltr'},
+    'wo': {'nome': 'Wolof', 'dir': 'ltr', 'ricaduta': 'fr'},
 }
 PREDEFINITA = next(iter(LINGUE))
 
@@ -74,12 +82,18 @@ def _carica_traduzioni():
 TRADUZIONI = _carica_traduzioni()
 
 
-RICADUTA = 'en'  # lingua usata per le chiavi che mancano, prima dell'italiano
+RICADUTA = 'en'  # lingua usata per le chiavi che mancano, prima dell'italiano (salvo 'ricaduta' in LINGUE)
+
+
+def hreflang(codice):
+    return LINGUE[codice].get('hreflang', codice)
 
 
 def lingua_del_testo(lingua, chiave):
-    """In che lingua si mostra davvero una chiave: la lingua della pagina, poi l'inglese, poi l'italiano."""
-    for codice in (lingua, RICADUTA, PREDEFINITA):
+    """In che lingua si mostra davvero una chiave: la lingua della pagina, poi la sua ricaduta
+    (di solito l'inglese), poi l'inglese, poi l'italiano."""
+    ricaduta = LINGUE.get(lingua, {}).get('ricaduta', RICADUTA)
+    for codice in (lingua, ricaduta, RICADUTA, PREDEFINITA):
         if chiave in TRADUZIONI.get(codice, {}):
             return codice
     return None
@@ -178,18 +192,22 @@ def _comuni(lingua, pagina=''):
         predefinita=PREDEFINITA,
         sito=SITO,
         t=traduttore(lingua),
+        ha=lambda chiave: lingua_del_testo(lingua, chiave) == lingua,  # testo scritto nella lingua della pagina?
+        hreflang=hreflang,
         email=email_protetta,
         percorso_lingua=lambda codice: f'/{codice}/{pagina}',  # la stessa pagina in un'altra lingua
         versione_css=VERSIONE_CSS,
+        adesso=int(time.time()),
     )
 
 
-def _pagina(lingua, stato=200):
+def _pagina(lingua, stato=200, **modulo):
     arabita_titoli, banglita_titoli = get_titoli()
     html = render_template(
         'index.html',
         arabita_titoli=arabita_titoli,
         banglita_titoli=banglita_titoli,
+        **modulo,
         **_comuni(lingua),
     )
     return make_response(html, stato)
@@ -216,9 +234,17 @@ def index(lingua):
     return _imposta_cookie(_pagina(lingua), lingua)
 
 
-# Lingue con l'informativa privacy scritta nella loro lingua (le altre mostrano la ricaduta).
+# Lingue con la pagina scritta nella loro lingua (le altre mostrano la ricaduta, senza indicizzazione).
+def _lingue_con(chiave):
+    return [c for c in LINGUE if chiave in TRADUZIONI[c]]
+
+
 def _lingue_privacy():
-    return [c for c in LINGUE if 'privacy.2.testo' in TRADUZIONI[c]]
+    return _lingue_con('privacy.2.testo')
+
+
+def _lingue_ong():
+    return _lingue_con('ong.1.d')
 
 
 @app.route('/<lingua>/privacy/')
@@ -245,23 +271,111 @@ def privacy_senza_lingua():
     return risposta
 
 
+def _pagina_ong(lingua, stato=200, **modulo):
+    lingua_testo = lingua_del_testo(lingua, 'ong.1.d')
+    html = render_template(
+        'ong.html',
+        lingua_testo=lingua_testo,
+        dir_testo=LINGUE[lingua_testo]['dir'],
+        tradotta=lingua_testo == lingua,
+        lingue_ong=_lingue_ong(),
+        **modulo,
+        **_comuni(lingua, 'ong/'),
+    )
+    return make_response(html, stato)
+
+
+@app.route('/<lingua>/ong/')
+def ong(lingua):
+    if lingua not in LINGUE:
+        abort(404)
+    return _imposta_cookie(_pagina_ong(lingua), lingua)
+
+
+# ── Modulo di contatto ──────────────────────────────────────────────────────
+EMAIL_VALIDA = re.compile(r'^[^@\s<>]+@[^@\s<>]+\.[^@\s<>]{2,}$')
+INVII_ORA = 5          # messaggi per indirizzo IP in un'ora (per worker)
+SECONDI_MINIMI = 3     # chi invia prima di così è un programma
+_invii = {}
+
+
+def _troppi_invii(ip):
+    adesso = time.time()
+    recenti = [t for t in _invii.get(ip, []) if adesso - t < 3600]
+    _invii[ip] = recenti
+    if len(recenti) >= INVII_ORA:
+        return True
+    recenti.append(adesso)
+    return False
+
+
+@app.route('/<lingua>/contatto/', methods=['POST'])
+def contatto(lingua):
+    if lingua not in LINGUE:
+        abort(404)
+    f = request.form
+    origine = 'ong' if f.get('origine') == 'ong' else 'home'
+    dati = {
+        'nome': f.get('nome', '').strip()[:120],
+        'email': f.get('email', '').strip()[:200],
+        'organizzazione': f.get('organizzazione', '').strip()[:200],
+        'tema': f.get('tema') if f.get('tema') in contatti.TEMI else 'altro',
+        'messaggio': f.get('messaggio', '').strip()[:5000],
+        'lingua': lingua,
+        'origine': origine,
+    }
+    try:
+        secondi = time.time() - int(f.get('t0', '0'))
+    except ValueError:
+        secondi = 0
+    # Trappole per i programmi: il campo «sito» è nascosto alle persone; invio troppo veloce.
+    # Si risponde «grazie» comunque, così il programma non impara niente.
+    if f.get('sito') or secondi < SECONDI_MINIMI:
+        return redirect(f'/{lingua}/grazie/', 303)
+
+    errore = None
+    if not (dati['nome'] and EMAIL_VALIDA.match(dati['email']) and len(dati['messaggio']) >= 10
+            and f.get('consenso')):
+        errore = 'modulo.errore'
+    elif _troppi_invii(request.remote_addr or '-'):
+        errore = 'modulo.troppi'
+    if errore:
+        pagina = _pagina_ong if origine == 'ong' else _pagina
+        return pagina(lingua, 400 if errore == 'modulo.errore' else 429, modulo=dati, errore=errore)
+
+    t = traduttore(lingua)
+    riserva = (str(t('email.oggetto')), str(t('email.testo')).replace('{nome}', dati['nome']))
+    contatti.avvia(dati, riserva)
+    return redirect(f'/{lingua}/grazie/', 303)
+
+
+@app.route('/<lingua>/grazie/')
+def grazie(lingua):
+    if lingua not in LINGUE:
+        abort(404)
+    return render_template('grazie.html', **_comuni(lingua, 'grazie/'))
+
+
+# ── Sitemap e robots ────────────────────────────────────────────────────────
+def _url_sitemap(pagina, codici, x_default=None):
+    """Una <url> per lingua, ognuna con tutte le alternative."""
+    alternative = ''.join(
+        f'<xhtml:link rel="alternate" hreflang="{hreflang(c)}" href="{escape(SITO)}/{c}/{pagina}"/>' for c in codici
+    )
+    if x_default:
+        alternative += f'<xhtml:link rel="alternate" hreflang="x-default" href="{escape(SITO)}/{x_default}/{pagina}"/>'
+    return [f'<url><loc>{escape(SITO)}/{c}/{pagina}</loc>{alternative}</url>' for c in codici]
+
+
 @app.route('/sitemap.xml')
 def sitemap():
     righe = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
              'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
-    alternative = ''.join(
-        f'<xhtml:link rel="alternate" hreflang="{c}" href="{escape(SITO)}/{c}/"/>' for c in LINGUE
-    ) + f'<xhtml:link rel="alternate" hreflang="x-default" href="{escape(SITO)}/"/>'
-    for c in LINGUE:
-        righe.append(f'<url><loc>{escape(SITO)}/{c}/</loc>{alternative}</url>')
+    righe += _url_sitemap('', LINGUE, x_default=RICADUTA)
+    righe += _url_sitemap('ong/', _lingue_ong(), x_default=RICADUTA)
     # Privacy: solo le versioni scritte davvero nella loro lingua.
-    lingue_privacy = _lingue_privacy()
-    alternative_privacy = ''.join(
-        f'<xhtml:link rel="alternate" hreflang="{c}" href="{escape(SITO)}/{c}/privacy/"/>' for c in lingue_privacy
-    )
-    for c in lingue_privacy:
-        righe.append(f'<url><loc>{escape(SITO)}/{c}/privacy/</loc>{alternative_privacy}</url>')
+    righe += _url_sitemap('privacy/', _lingue_privacy())
     righe.append('</urlset>')
     risposta = make_response('\n'.join(righe))
     risposta.headers['Content-Type'] = 'application/xml; charset=utf-8'

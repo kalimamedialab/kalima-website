@@ -2,9 +2,22 @@
 
 {% block seo %}
 <link rel="canonical" href="{{ sito }}/{{ lingua }}/">
-{% for codice in lingue %}<link rel="alternate" hreflang="{{ codice }}" href="{{ sito }}/{{ codice }}/">
-{% endfor %}<link rel="alternate" hreflang="x-default" href="{{ sito }}/">
+{% for codice in lingue %}<link rel="alternate" hreflang="{{ hreflang(codice) }}" href="{{ sito }}/{{ codice }}/">
+{% endfor %}<link rel="alternate" hreflang="x-default" href="{{ sito }}/en/">
 <meta property="og:url" content="{{ sito }}/{{ lingua }}/">
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Kalima Media Lab",
+  "url": sito ~ "/",
+  "logo": sito ~ "/static/loghi/kalima-media-lab.png",
+  "email": "info@kalimamedialab.com",
+  "address": {"@type": "PostalAddress", "addressLocality": "Milano", "addressCountry": "IT"},
+  "description": t('meta.descrizione')|striptags,
+  "sameAs": ["https://arabita.news", "https://banglita.news", "https://school.kalimamedialab.com"]
+}|tojson }}
+</script>
 {% endblock %}
 
 {% macro freccia() %}<svg class="freccia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>{% endmacro %}
@@ -102,10 +115,11 @@
         <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
         <h3>{{ t('servizi.1.titolo') }}</h3><p>{{ t('servizi.1.desc') }}</p>
       </div>
-      <div class="servizio">
-        <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>
-        <h3>{{ t('servizi.2.titolo') }}</h3><p>{{ t('servizi.2.desc') }}</p>
-      </div>
+      <a class="servizio servizio--link" href="/{{ lingua }}/ong/">
+        <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L4.8 8.3l5-.7z"/></svg></span>
+        <h3>{{ t('ong.titolo') }}</h3><p>{{ t('servizi.ong.d') }}</p>
+        <span class="servizio__vai">{{ t('servizi.ong.link') }} {{ freccia() }}</span>
+      </a>
       <div class="servizio">
         <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
         <h3>{{ t('servizi.3.titolo') }}</h3><p>{{ t('servizi.3.desc') }}</p>
@@ -123,8 +137,9 @@
     <div class="contatti__testo">
       <h2>{{ t('contatto.titolo') }}</h2>
       <p>{{ t('contatto.testo') }}</p>
+      <p class="contatti__email">{{ email('projects') }}</p>
     </div>
-    {{ email('projects', classe='pulsante pulsante--ambra') }}
+    {% include '_modulo.html' %}
   </div>
 </section>
 {% endblock %}

@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block titolo %}Kalima Media Lab{% endblock %}</title>
-<meta name="description" content="{% block descrizione %}{{ t('hero.tagline')|striptags }}{% endblock %}">
+<title>{% block titolo %}{% if ha('meta.titolo') %}{{ t('meta.titolo') }}{% else %}Kalima Media Lab{% endif %}{% endblock %}</title>
+<meta name="description" content="{% block descrizione %}{% if ha('meta.descrizione') %}{{ t('meta.descrizione') }}{% else %}{{ t('hero.tagline')|striptags }}{% endif %}{% endblock %}">
 {% block seo %}{% endblock %}
 <meta property="og:site_name" content="Kalima Media Lab">
 <meta property="og:title" content="{{ self.titolo() }}">
 <meta property="og:description" content="{{ self.descrizione() }}">
 <meta property="og:image" content="{{ sito }}/static/loghi/og-kalima.png">
-<meta property="og:locale" content="{{ lingua }}">
+<meta property="og:locale" content="{{ hreflang(lingua)|replace('-', '_') }}">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="only light">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/loghi/favicon-32.png">
@@ -29,6 +29,7 @@
     <nav class="testata__menu" aria-label="{{ t('nav.principale') }}">
       <a href="/{{ lingua }}/#testate">{{ t('nav.testate') }}</a>
       <a href="/{{ lingua }}/#servizi">{{ t('nav.servizi') }}</a>
+      <a href="/{{ lingua }}/ong/">{{ t('nav.ong') }}</a>
       <a href="/{{ lingua }}/#contatti">{{ t('footer.contatti') }}</a>
     </nav>
     <div class="testata__azioni">
@@ -50,7 +51,7 @@
   </div>
   <ul class="lingue__elenco">
     {% for codice, l in lingue.items() %}
-    <li><a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" dir="{{ l.dir }}" hreflang="{{ codice }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a></li>
+    <li><a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" dir="{{ l.dir }}" hreflang="{{ hreflang(codice) }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a></li>
     {% endfor %}
   </ul>
 </div>
@@ -61,12 +62,13 @@
 
 <footer class="piede contenitore">
   <nav class="piede__lingue" aria-label="{{ t('nav.lingue') }}">
-    {% for codice, l in lingue.items() %}<a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" hreflang="{{ codice }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a>
+    {% for codice, l in lingue.items() %}<a href="{{ percorso_lingua(codice) }}" lang="{{ codice }}" hreflang="{{ hreflang(codice) }}"{% if codice == lingua %} aria-current="page"{% endif %}>{{ l.nome }}</a>
     {% endfor %}
   </nav>
   <div class="piede__fondo">
     <span>© 2026 Kalima Media Lab · Milano</span>
     <nav aria-label="{{ t('footer.privacy') }}">
+      <a href="/{{ lingua }}/ong/">{{ t('nav.ong') }}</a>
       <a href="/{{ lingua }}/privacy/">{{ t('footer.privacy') }}</a>
       <a href="/{{ lingua }}/#contatti">{{ t('footer.contatti') }}</a>
     </nav>

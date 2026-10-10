@@ -1,0 +1,37 @@
+{# Modulo di contatto. Variabili facoltative: origine ('home' | 'ong'), modulo (valori già scritti), errore (chiave del testo). #}
+{% set m = modulo or {} %}
+{% set origine = origine|default('home') %}
+{% set tema_scelto = m.tema or ('ong' if origine == 'ong' else '') %}
+<form class="modulo" method="post" action="/{{ lingua }}/contatto/#modulo" id="modulo">
+  <h3 class="modulo__titolo">{{ t('modulo.titolo') }}</h3>
+  {% if errore %}<p class="modulo__errore" role="alert">{{ t(errore) }}</p>{% endif %}
+  <input type="hidden" name="origine" value="{{ origine }}">
+  <input type="hidden" name="t0" value="{{ adesso }}">
+  <div class="modulo__trappola" aria-hidden="true">
+    <label>Sito web <input type="text" name="sito" tabindex="-1" autocomplete="off"></label>
+  </div>
+  <div class="modulo__riga">
+    <label class="campo"><span>{{ t('modulo.nome') }}</span>
+      <input type="text" name="nome" required maxlength="120" autocomplete="name" value="{{ m.nome }}"></label>
+    <label class="campo"><span>{{ t('modulo.email') }}</span>
+      <input type="email" name="email" required maxlength="200" autocomplete="email" dir="ltr" value="{{ m.email }}"></label>
+  </div>
+  <div class="modulo__riga">
+    <label class="campo"><span>{{ t('modulo.org') }}</span>
+      <input type="text" name="organizzazione" maxlength="200" autocomplete="organization" value="{{ m.organizzazione }}"></label>
+    <label class="campo"><span>{{ t('modulo.tema') }}</span>
+      <select name="tema">
+        {% for tema in ['ong', 'media', 'materiali', 'scuola', 'altro'] %}
+        <option value="{{ tema }}"{% if tema == tema_scelto %} selected{% endif %}>{{ t('modulo.tema.' ~ tema) }}</option>
+        {% endfor %}
+      </select></label>
+  </div>
+  <label class="campo"><span>{{ t('modulo.messaggio') }}</span>
+    <textarea name="messaggio" required minlength="10" maxlength="5000" rows="6">{{ m.messaggio }}</textarea></label>
+  <label class="modulo__consenso">
+    <input type="checkbox" name="consenso" value="1" required>
+    <span>{{ t('modulo.consenso')|replace('{privacy}', '/' ~ lingua ~ '/privacy/') }}</span>
+  </label>
+  <p class="modulo__nota">{{ t('modulo.nota_ia') }}</p>
+  <button class="pulsante pulsante--ambra" type="submit">{{ t('modulo.invia') }}</button>
+</form>

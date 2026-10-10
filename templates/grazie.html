@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block titolo %}{{ t('grazie.titolo') }} · Kalima Media Lab{% endblock %}
+{% block seo %}<meta name="robots" content="noindex, follow">{% endblock %}
+
+{% block contenuto %}
+<div class="contenitore documento grazie">
+  <h1>{{ t('grazie.titolo') }}</h1>
+  <p>{{ t('grazie.testo') }}</p>
+  <a class="pulsante pulsante--blu" href="/{{ lingua }}/">{{ t('grazie.indietro') }}</a>
+</div>
+{% endblock %}

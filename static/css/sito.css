@@ -132,6 +132,23 @@ html[dir="rtl"] .pulsante .freccia { transform: scaleX(-1); }
 .servizio__icona svg { width: 22px; height: 22px; }
 .servizio h3 { font-family: var(--font); font-size: 20px; line-height: 1.3; }
 .servizio p { font-size: 15.5px; color: var(--testo-2); }
+.servizio--link { text-decoration: none; color: inherit; border-color: var(--ottanio); transition: transform .15s ease, box-shadow .15s ease; }
+.servizio--link:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(10, 29, 73, 0.10); }
+.servizio__vai { margin-block-start: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #00808A; }
+.servizio__vai svg { width: 16px; height: 16px; }
+html[dir="rtl"] .servizio__vai .freccia { transform: scaleX(-1); }
+
+/* ── Pagina ONG ── */
+.sezione--chiara { background: #FFFFFF; }
+.ong-due { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(32px, 5vw, 64px); }
+.ong-due h2 { font-weight: 800; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.02em; margin-block-end: 16px; }
+.ong-perche p { font-size: 18px; color: var(--testo-2); }
+.ong-loghi { display: flex; flex-wrap: wrap; gap: 16px; margin-block-start: 24px; }
+.ong-loghi a { background: #0B0C10; border-radius: 18px; padding: 10px 18px; display: inline-flex; }
+.ong-loghi img { height: 56px; width: auto; }
+.ong-come ol { list-style: none; counter-reset: passo; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ong-come li { counter-increment: passo; display: flex; gap: 16px; align-items: flex-start; font-size: 17px; }
+.ong-come li::before { content: counter(passo); flex: none; width: 40px; height: 40px; border-radius: 999px; background: var(--ottanio); color: var(--blu); font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
 
 /* ── Contatti ── */
 .contatti { background: var(--blu); color: #FFFFFF; }
@@ -140,6 +157,26 @@ html[dir="rtl"] .pulsante .freccia { transform: scaleX(-1); }
 .contatti h2 { font-weight: 800; font-size: clamp(36px, 5.5vw, 72px); letter-spacing: -0.02em; max-width: 16ch; }
 .contatti p { color: #C8D0E0; font-size: 19px; }
 .contatti .pulsante { min-height: 60px; font-size: 18px; padding-inline: 28px; }
+.contatti .contenitore { align-items: flex-start; }
+.contatti__email { font-size: 16px !important; }
+.contatti__email a { color: #FFFFFF; }
+
+/* ── Modulo di contatto ── */
+.modulo { flex: 1 1 520px; min-width: 0; background: #FFFFFF; color: var(--blu); border-radius: var(--raggio); padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px; scroll-margin-block-start: 100px; }
+.modulo__titolo { font-family: var(--font); font-size: 22px; }
+.modulo__riga { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.campo { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; }
+.campo input, .campo select, .campo textarea { font: inherit; font-weight: 400; font-size: 16px; color: var(--blu); background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 12px 14px; min-height: 48px; width: 100%; }
+.campo textarea { resize: vertical; min-height: 140px; }
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: 2px solid var(--ottanio); outline-offset: 1px; border-color: transparent; }
+.modulo__consenso { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.modulo__consenso input { width: 20px; height: 20px; margin-block-start: 2px; flex: none; accent-color: var(--blu); }
+.modulo__consenso a, .modulo .modulo__nota a { color: #00808A; }
+.contatti .modulo p.modulo__nota { color: var(--testo-2); font-size: 13.5px; }
+.contatti .modulo p.modulo__errore { color: #B42318; background: #FEF3F2; border-radius: 12px; padding: 10px 14px; font-size: 15px; }
+.modulo .pulsante { align-self: flex-start; }
+.modulo__trappola { position: absolute; inset-inline-start: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.grazie { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; padding-block: 80px 120px; }
 
 /* ── Piede ── */
 .piede { padding-block: 40px 56px; }

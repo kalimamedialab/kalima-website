@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block titolo %}{{ t('ong.titolo') }} · Kalima Media Lab{% endblock %}
+{% block descrizione %}{{ t('ong.meta') }}{% endblock %}
+
+{% block seo %}
+{% if tradotta %}
+<link rel="canonical" href="{{ sito }}/{{ lingua }}/ong/">
+{% for codice in lingue_ong %}<link rel="alternate" hreflang="{{ hreflang(codice) }}" href="{{ sito }}/{{ codice }}/ong/">
+{% endfor %}<link rel="alternate" hreflang="x-default" href="{{ sito }}/en/ong/">
+{% else %}
+<meta name="robots" content="noindex, follow">
+{% endif %}
+<meta property="og:url" content="{{ sito }}/{{ lingua }}/ong/">
+{% set offerte = [] %}{% for n in range(1, 7) %}{% set _ = offerte.append({"@type": "Offer", "itemOffered": {"@type": "Service", "name": t('ong.%d.t' % n)|striptags, "description": t('ong.%d.d' % n)|striptags}}) %}{% endfor %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": t('ong.titolo')|striptags,
+  "description": t('ong.meta')|striptags,
+  "url": sito ~ "/" ~ lingua ~ "/ong/",
+  "serviceType": t('ong.titolo')|striptags,
+  "areaServed": "Worldwide",
+  "audience": {"@type": "Audience", "audienceType": "NGOs, nonprofits"},
+  "provider": {"@type": "Organization", "name": "Kalima Media Lab", "url": sito ~ "/"},
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": t('ong.cosa')|striptags,
+    "itemListElement": offerte
+  }
+}|tojson }}
+</script>
+{% endblock %}
+
+
+{% block contenuto %}
+{% set icone = [
+  '<path d="M3 7h18v13H3zM8 3h8v4"/><circle cx="11" cy="13" r="3"/><path d="m13.5 15.5 2.5 2.5"/>',
+  '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/>',
+  '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+] %}
+<div lang="{{ lingua_testo }}" dir="{{ dir_testo }}">
+<section class="apertura apertura--ong">
+  <img class="apertura__globo" src="/static/loghi/icona-512.png" alt="" width="512" height="512" aria-hidden="true">
+  <div class="contenitore">
+    <span class="apertura__occhiello" lang="it" dir="ltr">Kalima Media Lab · Milano</span>
+    <h1>{{ t('ong.titolo') }}</h1>
+    <p class="apertura__sotto">{{ t('ong.sotto') }}</p>
+    <div class="apertura__azioni">
+      <a class="pulsante pulsante--ambra" href="#modulo">{{ t('modulo.titolo') }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="sezione">
+  <div class="contenitore">
+    <div class="sezione__testa"><h2>{{ t('ong.cosa') }}</h2></div>
+    <div class="servizi">
+      {% for n in range(1, 7) %}
+      <div class="servizio">
+        <span class="servizio__icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">{{ icone[n - 1]|safe }}</svg></span>
+        <h3>{{ t('ong.%d.t' % n) }}</h3><p>{{ t('ong.%d.d' % n) }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="sezione sezione--chiara">
+  <div class="contenitore ong-due">
+    <div class="ong-perche">
+      <h2>{{ t('ong.perche.t') }}</h2>
+      <p>{{ t('ong.perche.d') }}</p>
+      <div class="ong-loghi">
+        <a href="https://arabita.news" target="_blank" rel="noopener"><img src="/static/loghi/logo_arabita.png" alt="Arabita" width="1162" height="462" loading="lazy"></a>
+        <a href="https://banglita.news" target="_blank" rel="noopener"><img src="/static/loghi/logo_banglita.png" alt="Banglita" width="886" height="593" loading="lazy"></a>
+      </div>
+    </div>
+    <div class="ong-come">
+      <h2>{{ t('ong.come.t') }}</h2>
+      <ol>
+        {% for n in range(1, 4) %}<li>{{ t('ong.come.%d' % n) }}</li>{% endfor %}
+      </ol>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="contatti" id="contatti">
+  <div class="contenitore">
+    <div class="contatti__testo">
+      <h2>{{ t('contatto.titolo') }}</h2>
+      <p>{{ t('contatto.testo') }}</p>
+      <p class="contatti__email">{{ email('projects') }}</p>
+    </div>
+    {% set origine = 'ong' %}
+    {% include '_modulo.html' %}
+  </div>
+</section>
+{% endblock %}

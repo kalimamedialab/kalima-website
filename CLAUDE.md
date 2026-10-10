@@ -37,6 +37,16 @@ Proprietario: Marco. Lavoriamo in italiano.
 - `SITO` (canonical, hreflang, sitemap) = `https://www.kalimamedialab.com`: il dominio senza www oggi dà 403
   (record A del DNS non collegato al servizio Railway). Si cambia con la variabile `SITO_URL`.
 - `controlla_traduzioni.py`: elenca le chiavi mancanti o in più per ogni lingua.
+- Ricadute: una chiave mancante si mostra nella `ricaduta` della lingua (in `LINGUE`; wo → fr), poi in inglese, poi in italiano.
+  `hreflang` in `LINGUE` quando diverso dal codice (pt = pt-BR, pubblico Brasile). x-default = `/en/`.
+- `/<lingua>/ong/` (`templates/ong.html`): «Intelligenza artificiale per ONG e terzo settore», scritta in it, en, fr, es, pt, ar;
+  le altre lingue mostrano la ricaduta con noindex. JSON-LD `Service`; la home ha `Organization`.
+- Modulo di contatto (`templates/_modulo.html`, nella home e nella pagina ONG): POST `/<lingua>/contatto/` → `/<lingua>/grazie/`.
+  Anti-spam: campo trappola `sito`, almeno 3 secondi, 5 invii l'ora per IP. Il messaggio non si salva: `contatti.py` in un thread
+  chiede a Claude (`claude-opus-5-5`, fallbacks "default") risposta + resoconto, manda la risposta a chi ha scritto e il resoconto
+  a `RESOCONTI_A`. Senza chiave o con errore: messaggio fisso tradotto (`email.oggetto`, `email.testo`).
+  **`ia/linee_guida.md`** = le linee guida di Marco per le risposte (le regole fisse stanno in `contatti.py`).
+  Variabili Railway: `ANTHROPIC_API_KEY`, `RESOCONTI_A`, `MAIL_MITTENTE`, e `RESEND_API_KEY` oppure `SMTP_HOST/PORT/UTENTE/PASSWORD`.
 
 ## Rifacimento (piano approvato il 2026-10-10)
 1. FATTO: testi in JSON, URL per lingua, cookie, hreflang, canonical, sitemap, robots, privacy.
