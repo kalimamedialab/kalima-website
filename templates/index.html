@@ -12,7 +12,6 @@
   "name": "Kalima Media Lab",
   "url": sito ~ "/",
   "logo": sito ~ "/static/loghi/kalima-media-lab.png",
-  "email": "projects@kalimamedialab.com",
   "address": {"@type": "PostalAddress", "addressLocality": "Milano", "addressCountry": "IT"},
   "description": t('meta.descrizione')|striptags,
   "sameAs": ["https://arabita.news", "https://banglita.news", "https://school.kalimamedialab.com"]
@@ -140,7 +139,6 @@
     <div class="contatti__testo">
       <h2>{{ t('contatto.titolo') }}</h2>
       <p>{{ t('contatto.testo') }}</p>
-      <p class="contatti__email">{{ email('projects') }}</p>
     </div>
     {% include '_modulo.html' %}
   </div>

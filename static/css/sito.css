@@ -158,8 +158,6 @@ html[dir="rtl"] .servizio__vai .freccia { transform: scaleX(-1); }
 .contatti p { color: #C8D0E0; font-size: 19px; }
 .contatti .pulsante { min-height: 60px; font-size: 18px; padding-inline: 28px; }
 .contatti .contenitore { align-items: flex-start; }
-.contatti__email { font-size: 16px !important; }
-.contatti__email a { color: #FFFFFF; }
 
 /* ── Modulo di contatto ── */
 .modulo { flex: 1 1 520px; min-width: 0; background: #FFFFFF; color: var(--blu); border-radius: var(--raggio); padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px; scroll-margin-block-start: 100px; }

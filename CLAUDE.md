@@ -34,6 +34,8 @@ Proprietario: Marco. Lavoriamo in italiano.
   (blocco con lang/dir dell'inglese, pagina noindex). `/privacy` → lingua del visitatore.
 - E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= projects@)
   producono un link che `templates/_email.html` ricompone nel browser.
+  Decisione di Marco (2026-10-11): nessun indirizzo visibile fuori dalla privacy (lì serve per il GDPR, art. 13),
+  né nel JSON-LD. Chi vuole scrivere usa il modulo, così passa dal filtro di contatti.py.
 - `SITO` (canonical, hreflang, sitemap) = `https://www.kalimamedialab.com`: il dominio senza www oggi dà 403
   (record A del DNS non collegato al servizio Railway). Si cambia con la variabile `SITO_URL`.
 - `controlla_traduzioni.py`: elenca le chiavi mancanti o in più per ogni lingua.
