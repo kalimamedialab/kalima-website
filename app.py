@@ -109,7 +109,7 @@ def email_protetta(utente, dominio='kalimamedialab.com', classe=''):
              testo=f'{utente} [at] {dominio.replace(".", " [dot] ")}')
 
 
-EMAIL_INFO = email_protetta('info')
+EMAIL_INFO = email_protetta('projects')  # indirizzo di contatto del sito: {email} nei testi
 
 
 def traduttore(lingua):
@@ -360,14 +360,21 @@ def contatto(lingua):
         'messaggio': f.get('messaggio', '').strip()[:5000],
         'lingua': lingua,
         'origine': origine,
+        # campo trappola «sito» (nascosto alle persone): se è compilato lo scarta il prefiltro di contatti.py
+        'honeypot': (f.get('sito') or '').strip()[:200],
     }
     try:
         secondi = time.time() - int(f.get('t0', '0'))
     except ValueError:
         secondi = 0
-    # Trappole per i programmi: il campo «sito» è nascosto alle persone; invio troppo veloce.
-    # Si risponde «grazie» comunque, così il programma non impara niente.
-    if f.get('sito') or secondi < SECONDI_MINIMI:
+    # Trappole per i programmi. Si risponde sempre «grazie», così il programma non impara niente.
+    # Campo nascosto compilato: va a contatti.avvia, che lo scarta e lo registra (log e archivio).
+    if dati['honeypot']:
+        t = traduttore(lingua)
+        contatti.avvia(dati, (str(t('email.oggetto')), str(t('email.testo')).replace('{nome}', dati['nome'])))
+        return redirect(f'/{lingua}/grazie/', 303)
+    # Invio troppo veloce: scartato qui.
+    if secondi < SECONDI_MINIMI:
         return redirect(f'/{lingua}/grazie/', 303)
 
     errore = None
@@ -393,6 +400,17 @@ def grazie(lingua):
     if lingua not in LINGUE:
         abort(404)
     return render_template('grazie.html', **_comuni(lingua, 'grazie/'))
+
+
+# Messaggi vaghi: chi ha scritto risponde da questa pagina (link con token nell'e-mail, contatti.py).
+@app.route('/contatti/continua/<token>', methods=['GET', 'POST'])
+def contatti_continua(token):
+    if request.method == 'POST':
+        ok = contatti.riprendi_approfondimento(token, request.form.get('testo', ''))
+        return ('Grazie, abbiamo ricevuto la tua risposta.' if ok
+                else 'Questo link non è più valido. Se vuoi, scrivici di nuovo dal modulo di contatto.')
+    return ('<form method="post"><textarea name="testo" rows="8" required maxlength="4000"></textarea>'
+            '<button type="submit">Invia</button></form>')
 
 
 # ── Sitemap e robots ────────────────────────────────────────────────────────

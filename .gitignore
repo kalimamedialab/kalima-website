@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .env
 .env.*
+# archivio dei messaggi in locale (archivio.py senza database): contiene dati privati
+*.sqlite3
+# fonti originali della base di conoscenza (la cartella oggi ha uno spazio nel nome)
+ia/fonti_originali/
+ia/fonti _originali/

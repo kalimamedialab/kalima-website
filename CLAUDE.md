@@ -32,7 +32,7 @@ Proprietario: Marco. Lavoriamo in italiano.
   1200×630), loghi di Arabita e Banglita. La pagina dichiara `color-scheme: only light` (niente tema scuro forzato).
 - `/<lingua>/privacy/`: informativa (`privacy.*`), scritta in it ed en; le altre lingue mostrano l'inglese
   (blocco con lang/dir dell'inglese, pagina noindex). `/privacy` → lingua del visitatore.
-- E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= info@)
+- E-mail: mai in chiaro nell'HTML. `email('utente')` nei template e `{email}` nei testi (= projects@)
   producono un link che `templates/_email.html` ricompone nel browser.
 - `SITO` (canonical, hreflang, sitemap) = `https://www.kalimamedialab.com`: il dominio senza www oggi dà 403
   (record A del DNS non collegato al servizio Railway). Si cambia con la variabile `SITO_URL`.
