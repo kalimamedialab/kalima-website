@@ -21,6 +21,7 @@
       <input type="text" name="organizzazione" maxlength="200" autocomplete="organization" value="{{ m.organizzazione }}"></label>
     <label class="campo"><span>{{ t('modulo.tema') }}</span>
       <select name="tema">
+        <option value=""{% if not tema_scelto %} selected{% endif %}>{{ t('modulo.tema.scegli') }}</option>
         {% for tema in ['ong', 'media', 'materiali', 'comunicazione', 'scuola', 'altro'] %}
         <option value="{{ tema }}"{% if tema == tema_scelto %} selected{% endif %}>{{ t('modulo.tema.' ~ tema) }}</option>
         {% endfor %}
